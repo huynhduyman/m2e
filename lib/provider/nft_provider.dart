@@ -296,7 +296,11 @@ class NFTProvider with ChangeNotifier {
         'creator': nft.creator,
       });
 
+      debugPrint('_graphql get $qNFT : ${gData.toString()}');
+
       listingInfo = await _repo.getNFTListingInfo(nft.cAddress, nft.tokenId);
+
+      debugPrint('listingInfo getNFTListingInfo : ${listingInfo.toString()}');
 
       listingType = listingInfo!.listingType;
       nftCollection = Collection.fromMap(gData['collections'][0]);

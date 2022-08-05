@@ -67,7 +67,7 @@ class IPFSService {
   Future<String> uploadMetaData(Map<String, dynamic> body) async {
     try {
       final response = await http.post(
-        Uri.parse('https://api.nft.storage/upload'),
+        Uri.parse(ipfsUploadURL),
         headers: {
           'Authorization': 'Bearer $nftStorageKey',
           'content-type': 'application/json',
@@ -94,7 +94,7 @@ class IPFSService {
       final bytes = File(imgPath).readAsBytesSync();
 
       final response = await http.post(
-        Uri.parse('https://api.nft.storage/upload'),
+        Uri.parse(ipfsUploadURL),
         headers: {
           'Authorization': 'Bearer $nftStorageKey',
           'content-type': 'image/*'

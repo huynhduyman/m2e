@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatelessWidget {
+
   const CustomTextFormField({
     required this.controller,
     required this.labelText,
@@ -14,6 +15,8 @@ class CustomTextFormField extends StatelessWidget {
     this.labelTextStyle,
     this.errorTextStyle,
     this.suffix,
+    this.prefix,
+    this.autofillHints,
     this.textInputAction = TextInputAction.next,
     this.textInputType = TextInputType.text,
     this.onChanged,
@@ -82,6 +85,13 @@ class CustomTextFormField extends StatelessWidget {
   ///Suffix Widget for the text field
   final Widget? suffix;
 
+
+  ///[Default value is TextInputType.text]
+  final Iterable<String>? autofillHints;
+
+  ///Pre Suffix Widget for the text field
+  final Widget? prefix;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -92,19 +102,24 @@ class CustomTextFormField extends StatelessWidget {
       obscureText: obscureText,
       textInputAction: textInputAction,
       keyboardType: textInputType,
+      autofillHints: autofillHints,
       // style: inputTextStyle,
       style: Theme.of(context).textTheme.headline5,
       validator: validator,
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
       decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         labelText: labelText,
         errorText: errorText,
         // labelStyle: Theme.of(context).textTheme.bodyText2,
         errorStyle: Theme.of(context).textTheme.bodyText2!.copyWith(
               color: const Color(0xffB00020),
             ),
-        suffix: suffix,
+        prefixIcon: prefix,
+        suffixIcon: suffix,
       ),
     );
   }

@@ -20,9 +20,9 @@ class BottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       backgroundColor: Theme.of(context).colorScheme.surface,
       elevation: 0,
-      iconSize: rf(24),
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
+      iconSize: rf(20),
+      showSelectedLabels: true,
+      showUnselectedLabels: true,
       currentIndex: currentIndex,
       onTap: onTap,
       type: BottomNavigationBarType.fixed,
@@ -32,18 +32,20 @@ class BottomNavBar extends StatelessWidget {
           activeIcon: Icon(Iconsax.home_15),
           label: 'Home',
         ),
-        BottomNavigationBarItem(
-          icon: const Icon(Iconsax.search_normal_1),
-          activeIcon: SvgPicture.asset(
-            "assets/images/search.svg",
-            width: rf(24),
-          ),
-          label: 'Favourite',
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.directions_run),
+          activeIcon: Icon(Icons.directions_run),
+          label: 'Workouts',
         ),
         const BottomNavigationBarItem(
-          icon: Icon(Iconsax.heart),
-          activeIcon: Icon(Iconsax.heart5),
-          label: 'Search',
+          icon: Icon(Icons.add_chart_sharp),
+          activeIcon: Icon(Icons.add_chart_sharp),
+          label: 'Marketplace',
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(Iconsax.wallet),
+          activeIcon: Icon(Iconsax.wallet),
+          label: 'Wallet',
         ),
         BottomNavigationBarItem(
           icon: const Icon(Iconsax.user),

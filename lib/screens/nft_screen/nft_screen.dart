@@ -34,11 +34,33 @@ class NFTScreen extends StatefulWidget {
 }
 
 class _NFTScreenState extends State<NFTScreen> {
+
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+  GlobalKey<RefreshIndicatorState>();
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('run NFTScreen initState');
+    Provider.of<NFTProvider>(context, listen: false)
+        .fetchNFTMetadata(widget.nft);
+  }
+
   @override
   void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    debugPrint('run NFTScreen didChangeDependencies');
     super.didChangeDependencies();
     Provider.of<NFTProvider>(context, listen: false)
         .fetchNFTMetadata(widget.nft);
+  }
+
+  @override
+  void didUpdateWidget(NFTScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.nft != widget.nft) {
+      initState();
+    }
   }
 
   _openBids(bool isOwner) {
@@ -171,7 +193,18 @@ class _NFTScreenState extends State<NFTScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        color: Colors.white,
+        backgroundColor: Colors.blue,
+        strokeWidth: 1.0,
+        onRefresh: () async {
+          // Replace this delay with the code to be executed during refresh
+          didChangeDependencies();
+          // and return a Future when code finishs execution.
+          return Future<void>.delayed(const Duration(seconds: 3));
+        },
+        child:Column(
         children: [
           //SCROLLABLE PART
           Expanded(
@@ -327,6 +360,8 @@ class _NFTScreenState extends State<NFTScreen> {
               }
 
               final _isOwner = widget.nft.owner == walletProvider.address.hex;
+              debugPrint('_isOwner: ${_isOwner}');
+
               final _listingType = nftProvider.listingInfo!.listingType;
               final _listingInfo = nftProvider.listingInfo!;
 
@@ -436,6 +471,7 @@ class _NFTScreenState extends State<NFTScreen> {
           }),
         ],
       ),
+    )
     );
   }
 }

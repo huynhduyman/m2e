@@ -6,6 +6,8 @@ import '../../../core/utils/utils.dart';
 import '../../../core/widgets/custom_widgets.dart';
 import '../../../provider/wallet_provider.dart';
 import '../../wallet_screen/wallet_screen.dart';
+import '../../search_screen/search_screen.dart';
+
 
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({Key? key}) : super(key: key);
@@ -16,7 +18,7 @@ class HomeAppBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         UpperCaseText(
-          'Explore',
+          'NFTS',
           style: Theme.of(context).textTheme.headline2!.copyWith(
                 letterSpacing: 2,
                 fontWeight: FontWeight.w300,
@@ -24,6 +26,29 @@ class HomeAppBar extends StatelessWidget {
         ),
 
         const Spacer(),
+        GestureDetector(
+            onTap: () => Navigation.push(
+              context,
+              screen: const SearchScreen(),
+            ),
+          child: const Icon(
+            Icons.search,
+            size: 32.0,
+          ),
+        ),
+        const Spacer(),
+        GestureDetector(
+          onTap: () => Navigation.push(
+            context,
+            screen: const SearchScreen(),
+          ),
+          child: const Icon(
+            Icons.notifications,
+            size: 32.0,
+          ),
+        ),
+        const Spacer(),
+
 
         ///WALLET
         GestureDetector(
@@ -43,7 +68,7 @@ class HomeAppBar extends StatelessWidget {
                   SizedBox(height: rh(2)),
                   Consumer<WalletProvider>(builder: (context, provider, child) {
                     return UpperCaseText(
-                      formatBalance(provider.balance, 2) + ' MATIC',
+                      '${formatBalance(provider.balance, 2)} MATIC',
                       key: ValueKey(provider.balance),
                       style: Theme.of(context).textTheme.headline2,
                     );

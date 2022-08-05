@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'tabs/fav_tab.dart';
+import 'tabs/wallet_tab.dart';
 import 'tabs/home_tab.dart';
 import 'tabs/search_tab.dart';
+import 'tabs/workouts_tab.dart';
 import 'tabs/user_tab.dart';
+import 'tabs/marketplace_tab.dart';
 import 'widgets/bottom_nav_bar.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({Key? key}) : super(key: key);
 
   @override
-  _TabsScreenState createState() => _TabsScreenState();
+  State<TabsScreen> createState() => _TabsScreenState();
 }
 
 class _TabsScreenState extends State<TabsScreen> {
@@ -18,8 +20,9 @@ class _TabsScreenState extends State<TabsScreen> {
 
   final List<Widget> _tabs = [
     const HomeTab(),
-    const SearchTab(),
-    const FavTab(),
+    const WorkoutsTab(),
+    const MarketPlaceTab(),
+    const WalletTab(),
     const UserTab()
   ];
 

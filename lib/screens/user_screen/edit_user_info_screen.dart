@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:nfts/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/services/image_picker_service.dart';
@@ -14,7 +17,7 @@ class EditUserInfoScreen extends StatefulWidget {
   const EditUserInfoScreen({Key? key}) : super(key: key);
 
   @override
-  _EditUserInfoScreenState createState() => _EditUserInfoScreenState();
+  State<EditUserInfoScreen> createState() => _EditUserInfoScreenState();
 }
 
 class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
@@ -27,7 +30,6 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
   final TextEditingController _twitterController = TextEditingController();
 
   String? _pickedImagePath;
-
   _pickImage() async {
     //Pick Image
     final image = await ImagePickerService.pickImage();
@@ -35,12 +37,16 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
 
     if (image != null) {
       _pickedImagePath = image.path;
+      debugPrint(_pickedImagePath);
 
       setState(() {});
     }
   }
 
   _submit() {
+    String email = 'man.huynh@gmail.com';
+    String password = 'passs123456';
+    Provider.of<AuthProvider>(context, listen: false).signUp(email: email, password: password);
     if (_formKey.currentState!.validate()) {
       Navigation.popAllAndPush(
         context,
@@ -50,6 +56,15 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
   }
 
   _skipForNow() {
+    // Provider.of<AuthProvider>(context, listen: false).signInAnonymously();
+    // AuthService(FirebaseAuth.instance).logInAnonymously();
+    String email = 'man.huynh@gmail.com';
+    String password = 'passs123456';
+    // Provider.of<AuthProvider>(context, listen: false).signInAnonymously();
+    // Provider.of<AuthProvider>(context, listen: false).signUp(email: email, password: password);
+    Provider.of<AuthProvider>(context, listen: false).signIn(email: email, password: password);
+    // AuthService(FirebaseAuth.instance).login(email, password);
+    // AuthService(FirebaseAuth.instance).signUp(email, password);
     Navigation.popAllAndPush(
       context,
       screen: const TabsScreen(),
@@ -95,10 +110,19 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(space1x),
                       color: Theme.of(context).colorScheme.surface,
+                      // image: DecorationImage(
+                      //     image: _pickedImagePath == null
+                      //         ? AssetImage()
+                      //         : FileImage(_pickedImagePath),
+                      //     fit: BoxFit.cover
+                      // ),
+
+
                       image: _pickedImagePath == null
                           ? null
                           : DecorationImage(
-                              image: AssetImage(_pickedImagePath!),
+                              image: FileImage(File(_pickedImagePath!)),
+                              // image: AssetImage(_pickedImagePath!),
                               fit: BoxFit.cover,
                             ),
                     ),

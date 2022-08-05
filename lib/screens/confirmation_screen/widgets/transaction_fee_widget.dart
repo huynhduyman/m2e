@@ -47,16 +47,16 @@ class TransactionFeeWidget extends StatelessWidget {
             value: '$totalAmount MATIC',
             isFontRegular: true,
           ),
-          SizedBox(height: rh(space2x)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              UpperCaseText(
-                '~ ' + (maticPrice * totalAmount).toStringAsFixed(4) + " USD",
-                style: Theme.of(context).textTheme.headline4,
-              ),
-            ],
-          ),
+          // SizedBox(height: rh(space2x)),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.end,
+          //   children: [
+          //     UpperCaseText(
+          //       '~ ' + (maticPrice * totalAmount).toStringAsFixed(4) + " USD",
+          //       style: Theme.of(context).textTheme.headline4,
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );

@@ -9,14 +9,42 @@ import '../../collection_screen/collection_screen.dart';
 import '../../nft_screen/nft_screen.dart';
 import '../widgets/home_app_bar.dart';
 
-class HomeTab extends StatelessWidget {
-  const HomeTab({Key? key}) : super(key: key);
+
+class HomeTab extends StatefulWidget {
+  const HomeTab({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _HomeTabsScreenState createState() => _HomeTabsScreenState();
+
+}
+
+class _HomeTabsScreenState extends State<HomeTab> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+  GlobalKey<RefreshIndicatorState>();
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: space2x),
+    return Scaffold(
+      // appBar: AppBar(
+      //
+      // ),
+    body: RefreshIndicator(
+      key: _refreshIndicatorKey,
+      color: Colors.white,
+      backgroundColor: Colors.blue,
+      strokeWidth: 1.0,
+      onRefresh: () async {
+        // Replace this delay with the code to be executed during refresh
+        Provider.of<FavProvider>(context, listen: false);
+        Provider.of<AppProvider>(context, listen: false);
+        // and return a Future when code finishs execution.
+        return Future<void>.delayed(const Duration(seconds: 3));
+      },
+      child: SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: space2x),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -41,33 +69,33 @@ class HomeTab extends StatelessWidget {
 
                 return Consumer<FavProvider>(
                     builder: (context, favProvider, child) {
-                  return ListView.separated(
-                    itemCount: provider.topCollections.length,
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    separatorBuilder: (BuildContext context, int index) {
-                      return SizedBox(height: rh(space2x));
-                    },
-                    itemBuilder: (BuildContext context, int index) {
-                      final collection = provider.topCollections[index];
-                      return GestureDetector(
-                        onTap: () => Navigation.push(
-                          context,
-                          screen: CollectionScreen(collection: collection),
-                        ),
-                        child: CollectionListTile(
-                          image: collection.image,
-                          title: collection.name,
-                          subtitle: 'By ${formatAddress(collection.creator)}',
-                          isFav: favProvider.isFavCollection(collection),
-                          onFavPressed: () =>
-                              favProvider.setFavCollection(collection),
-                        ),
+                      return ListView.separated(
+                        itemCount: provider.topCollections.length,
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        separatorBuilder: (BuildContext context, int index) {
+                          return SizedBox(height: rh(space2x));
+                        },
+                        itemBuilder: (BuildContext context, int index) {
+                          final collection = provider.topCollections[index];
+                          return GestureDetector(
+                            onTap: () => Navigation.push(
+                              context,
+                              screen: CollectionScreen(collection: collection),
+                            ),
+                            child: CollectionListTile(
+                              image: collection.image,
+                              title: collection.name,
+                              subtitle: 'By ${formatAddress(collection.creator)}',
+                              isFav: favProvider.isFavCollection(collection),
+                              onFavPressed: () =>
+                                  favProvider.setFavCollection(collection),
+                            ),
+                          );
+                        },
                       );
-                    },
-                  );
-                });
+                    });
               },
             ),
             // ListView.separated(
@@ -109,30 +137,30 @@ class HomeTab extends StatelessWidget {
               builder: (context, provider, child) {
                 return Consumer<FavProvider>(
                     builder: (context, favProvider, child) {
-                  return ListView.separated(
-                    itemCount: provider.featuredNFTs.length,
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    separatorBuilder: (BuildContext context, int index) {
-                      return SizedBox(height: rh(space3x));
-                    },
-                    itemBuilder: (BuildContext context, int index) {
-                      final nft = provider.featuredNFTs[index];
+                      return ListView.separated(
+                        itemCount: provider.featuredNFTs.length,
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        separatorBuilder: (BuildContext context, int index) {
+                          return SizedBox(height: rh(space3x));
+                        },
+                        itemBuilder: (BuildContext context, int index) {
+                          final nft = provider.featuredNFTs[index];
 
-                      return NFTCard(
-                        onTap: () => Navigation.push(context,
-                            screen: NFTScreen(nft: nft)),
-                        heroTag: '${nft.cAddress}-${nft.tokenId}',
-                        image: nft.image,
-                        title: nft.name,
-                        subtitle: nft.cName,
-                        isFav: favProvider.isFavNFT(nft),
-                        onFavPressed: () => favProvider.setFavNFT(nft),
+                          return NFTCard(
+                            onTap: () => Navigation.push(context,
+                                screen: NFTScreen(nft: nft)),
+                            heroTag: '${nft.cAddress}-${nft.tokenId}',
+                            image: nft.image,
+                            title: nft.name,
+                            subtitle: nft.cName,
+                            isFav: favProvider.isFavNFT(nft),
+                            onFavPressed: () => favProvider.setFavNFT(nft),
+                          );
+                        },
                       );
-                    },
-                  );
-                });
+                    });
               },
             ),
 
@@ -158,7 +186,8 @@ class HomeTab extends StatelessWidget {
 
             SizedBox(height: rh(space3x)),
           ],
-        ),
+          )
+        )
       ),
     );
   }

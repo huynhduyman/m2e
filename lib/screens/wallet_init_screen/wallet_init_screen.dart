@@ -8,7 +8,7 @@ import '../../core/utils/utils.dart';
 import '../../core/widgets/custom_widgets.dart';
 import '../../provider/app_provider.dart';
 import '../../provider/wallet_provider.dart';
-import '../edit_user_info_screen/edit_user_info_screen.dart';
+import '../user_screen/edit_user_info_screen.dart';
 import '../splash_screen/splash_screen.dart';
 
 class WalletInitScreen extends StatefulWidget {

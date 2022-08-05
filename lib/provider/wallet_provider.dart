@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
+import 'package:web3dart/crypto.dart';
+// import 'package:web3dart/src/crypto/formatting.dart';
 
 import '../core/services/contract_service.dart';
 import '../core/services/gasprice_service.dart';
@@ -45,7 +48,9 @@ class WalletProvider with ChangeNotifier {
 
   getBalance() async {
     balance = await _client.getBalance(address);
+    debugPrint('balance: ${balance}');
     _handleLoaded();
+    notifyListeners();
   }
 
   //Get Transaction Cost
@@ -110,6 +115,7 @@ class WalletProvider with ChangeNotifier {
       debugPrint('Transaction completed $lastTxHash');
 
       await getBalance();
+      await _walletService.setLastTxHash(lastTxHash.toString());
 
       await Future.delayed(const Duration(seconds: 18));
 
@@ -122,6 +128,39 @@ class WalletProvider with ChangeNotifier {
       debugPrint('Error at WalletProvider -> sendTransaction: $e');
       _handleError(e);
     }
+  }
+
+  sendTransactionWithThirdParty(Credentials cred, Transaction transaction) async {
+    debugPrint('Sending transaction');
+    try {
+      _handleLoading();
+
+      lastTxHash = '';
+      lastTxHash = await _client.sendTransaction(
+        cred,
+        transaction,
+        chainId: null,
+        fetchChainIdFromNetworkId: true,
+      );
+
+      debugPrint('Transaction completed $lastTxHash');
+
+      await getBalance();
+      await _walletService.setLastTxHash(lastTxHash.toString());
+
+      // await Future.delayed(const Duration(seconds: 10));
+
+      // _userProvider.fetchUserInfo();
+      _handleSuccess();
+    } catch (e) {
+      debugPrint('Error at WalletProvider -> sendTransactionWithThirdParty: $e');
+      // if (e.toString().contains('User canceled')) {
+      //   lastTxHash = e.toString();
+      // }
+      lastTxHash = e.toString();
+      // _handleError(e);
+    }
+    return lastTxHash;
   }
 
   buildTransaction(String contractAddress, String fName, List<dynamic> args,
@@ -147,7 +186,18 @@ class WalletProvider with ChangeNotifier {
 
   initializeWallet() async {
     cred = _walletService.initalizeWallet();
+    // address = EthereumAddress.fromHex(publicKey);
     address = await cred.extractAddress();
+    debugPrint('address: ${address}');
+    getBalance();
+
+    _handleLoaded();
+  }
+
+  initializeWalletWithThirdParty(String publicKey) async {
+    // cred = _walletService.initalizeWallet();
+    address = EthereumAddress.fromHex(publicKey);
+    debugPrint('address: ${address}');
     getBalance();
 
     _handleLoaded();
@@ -158,9 +208,32 @@ class WalletProvider with ChangeNotifier {
       cred = _walletService.initalizeWallet(privateKey);
       address = await cred.extractAddress();
       await _walletService.setPrivateKey(privateKey);
+      await _walletService.setPublicKey(address.toString());
       getBalance();
 
       _handleSuccess();
+    } on FormatException catch (e) {
+      debugPrint('Error: ${e.message}');
+
+      _handleError('Invalid private key');
+    } catch (e) {
+      debugPrint('Error: $e');
+
+      _handleError(e);
+    }
+  }
+
+  initializeFromMetaMask(provider,publicKey) async {
+    try {
+      cred = _walletService.initalizeWalletMetaMask(provider);
+      address = EthereumAddress.fromHex(publicKey);
+      debugPrint('address: ${address}');
+      // address = await cred.extractAddress();
+      // cred.extractAddress();
+
+      await _walletService.setPublicKey(address.toString());
+      getBalance();
+      _handleLoaded();
     } on FormatException catch (e) {
       debugPrint('Error: ${e.message}');
 

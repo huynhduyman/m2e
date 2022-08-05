@@ -24,7 +24,7 @@ class FavProvider with ChangeNotifier {
       favCollections.contains(collection);
 
   fetchFav() {
-    final key = _prefs.getString('user_private_key')!;
+    final key = _prefs.getString('user_public_key')!;
 
     final collections =
         jsonDecode(_prefs.getString(key + '-' + kFavCollection) ?? '[]');
@@ -39,7 +39,7 @@ class FavProvider with ChangeNotifier {
   }
 
   setFavCollection(Collection collection) async {
-    final key = _prefs.getString('user_private_key')!;
+    final key = _prefs.getString('user_public_key')!;
 
     if (isFavCollection(collection)) {
       favCollections.remove(collection);
@@ -54,7 +54,7 @@ class FavProvider with ChangeNotifier {
   }
 
   setFavNFT(NFT nft) async {
-    final key = _prefs.getString('user_private_key')!;
+    final key = _prefs.getString('user_public_key')!;
     //Add
     if (isFavNFT(nft)) {
       favNFT.remove(nft);

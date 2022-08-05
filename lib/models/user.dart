@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:web3dart/web3dart.dart';
 
+
 class User {
   final String name;
   final EthereumAddress uAddress;
