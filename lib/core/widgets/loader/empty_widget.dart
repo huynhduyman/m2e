@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../custom_widgets.dart';
 
 class EmptyWidget extends StatelessWidget {
-  const EmptyWidget({
+  const EmptyWidget({super.key,
     this.text = "Not found",
     this.style,
   });

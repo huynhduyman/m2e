@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/animations/animations.dart';
-import '../../core/services/firebase_service.dart';
 import '../../core/utils/utils.dart';
 import '../../core/widgets/custom_widgets.dart';
 import '../../provider/app_provider.dart';
@@ -13,8 +11,6 @@ import '../../provider/auth_provider.dart';
 import '../create_wallet_screen/create_wallet_screen.dart';
 import '../user_screen/sign_in_user_info_screen.dart';
 import '../user_screen/sign_up_user_info_screen.dart';
-import '../wallet_connect_thirdparty/wallet_connect_thirdparty.dart';
-import '../wallet_init_screen/wallet_init_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -319,7 +315,7 @@ class _SplashScreenState extends State<SplashScreen> {
               });
 
         }
-        return const CreateWalletScreen();
+        // return const CreateWalletScreen();
       }),
       // StreamBuilder(
       //     stream: FirebaseService().authStateChanges,

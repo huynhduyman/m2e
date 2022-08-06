@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/animations/scale_animation.dart';
 import '../../core/utils/utils.dart';
@@ -15,16 +14,11 @@ class TestMaticScreen extends StatelessWidget {
   const TestMaticScreen({Key? key}) : super(key: key);
 
   _openUrl(String url, BuildContext context) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-      await Future.delayed(const Duration(seconds: 2));
-      _skipForNow(context);
-    }
+    await openUrl(url, context);
   }
 
   _skipForNow(context) async {
     await Provider.of<AppProvider>(context, listen: false).initialize();
-
     Navigation.popAllAndPush(context, screen: const SplashScreen());
   }
 
@@ -77,7 +71,7 @@ class TestMaticScreen extends StatelessWidget {
                     SizedBox(height: rh(space3x)),
                     DataTile(
                       label: 'Wallet Balance',
-                      value: formatBalance(provider.balance) + ' MATIC',
+                      value: '${formatBalance(provider.balance)} MATIC',
                     ),
                     SizedBox(height: rh(space2x)),
                   ],

@@ -4,17 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:nfts/screens/user_screen/sign_in_user_info_screen.dart';
-import 'package:nfts/screens/user_screen/sign_up_user_info_screen.dart';
 import 'package:nfts/screens/user_screen/verify_user_info_screen.dart';
-import 'package:nfts/screens/wallet_connect_thirdparty/wallet_connect_thirdparty.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/services/firebase_service.dart';
 import '../../../core/utils/utils.dart';
 import '../../../core/widgets/custom_placeholder/custom_placeholder.dart';
 import '../../../core/widgets/custom_widgets.dart';
-import '../../../provider/app_provider.dart';
 import '../../../provider/auth_provider.dart';
 import '../../../provider/fav_provider.dart';
 import '../../../provider/user_provider.dart';
@@ -50,7 +45,6 @@ class _UserTabState extends State<UserTab>
   Future<User?> getUserByFirebase() async {
     // await _authProvider.getUser;
     final userFirebase = Provider.of<AuthProvider>(context, listen: false).getUser;
-    String? userEmail = userFirebase?.email.toString();
     // debugPrint(userFirebase.toString());
     // _userFirebase = userFirebase;
     // setState(() => _userEmail = userEmail);
@@ -90,6 +84,7 @@ class _UserTabState extends State<UserTab>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<UserProvider>(builder: (context, provider, child) {
 
       // if (FirebaseAuth.instance.currentUser != null) {
@@ -105,7 +100,6 @@ class _UserTabState extends State<UserTab>
         return const LoadingIndicator();
       }
 
-      final user = provider.user;
 
       return Scaffold(
         body: RefreshIndicator(
@@ -246,7 +240,7 @@ class _UserTabState extends State<UserTab>
                                                 right: rw(space2x),
                                                 semanticLabel: 'Share',
                                                 onPressed: () => share(
-                                                  " Creator " + provider.user.uAddress.hex,
+                                                  " Creator ${provider.user.uAddress.hex}",
                                                   provider.user.image,
                                                   provider.user.uAddress.hex,
                                                 ),
@@ -466,7 +460,7 @@ class _UserTabState extends State<UserTab>
                             heroTag: '${nft.cAddress}-${nft.tokenId}',
                             image: nft.image,
                             title: nft.name,
-                            subtitle: 'By ' + formatAddress(nft.creator),
+                            subtitle: 'By ${formatAddress(nft.creator)}',
                             isFav: favProvider.isFavNFT(nft),
                             onFavPressed: () => favProvider.setFavNFT(nft),
                           );

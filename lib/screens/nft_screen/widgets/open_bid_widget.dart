@@ -15,10 +15,11 @@ class OpenBidWidget extends StatefulWidget {
   final bool isOwner;
 
   @override
-  _OpenBidWidgetState createState() => _OpenBidWidgetState();
+  State<OpenBidWidget> createState() => _OpenBidWidgetState();
 }
 
 class _OpenBidWidgetState extends State<OpenBidWidget> {
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -84,6 +85,7 @@ class _OpenBidWidgetState extends State<OpenBidWidget> {
                       onTap: () async {
                         nftProvider.selectedBid = bid;
                         await Future.delayed(const Duration(milliseconds: 250));
+                        if (!mounted) return;
                         Navigation.pop(context);
                       },
                       child: BidTile(

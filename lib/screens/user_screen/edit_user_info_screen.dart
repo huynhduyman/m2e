@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:nfts/provider/auth_provider.dart';
@@ -153,7 +152,7 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
                       SizedBox(height: rh(space3x)),
                       DataTile(
                         label: 'Wallet Balance',
-                        value: formatBalance(provider.balance) + ' MATIC',
+                        value: '${formatBalance(provider.balance)} MATIC',
                         // '10 MAT - \$38 ',
                       ),
                       SizedBox(height: rh(space2x)),

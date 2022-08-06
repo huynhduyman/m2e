@@ -53,8 +53,6 @@ class _WalletTabState extends State<WalletTab>
         return const LoadingIndicator();
       }
 
-      final user = provider.user;
-
       return Scaffold(
           body: RefreshIndicator(
               key: _refreshIndicatorKey,

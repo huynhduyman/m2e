@@ -30,7 +30,7 @@ class NFTScreen extends StatefulWidget {
   final NFT nft;
 
   @override
-  _NFTScreenState createState() => _NFTScreenState();
+  State<NFTScreen> createState() => _NFTScreenState();
 }
 
 class _NFTScreenState extends State<NFTScreen> {
@@ -224,7 +224,7 @@ class _NFTScreenState extends State<NFTScreen> {
                           bottom: 0,
                           semanticLabel: 'Share',
                           onPressed: () => share(
-                            widget.nft.name + ' NFT',
+                            '${widget.nft.name} NFT',
                             widget.nft.image,
                             widget.nft.cName,
                           ),
@@ -359,21 +359,21 @@ class _NFTScreenState extends State<NFTScreen> {
                 );
               }
 
-              final _isOwner = widget.nft.owner == walletProvider.address.hex;
-              debugPrint('_isOwner: ${_isOwner}');
+              final isOwner = widget.nft.owner == walletProvider.address.hex;
+              debugPrint('_isOwner: $isOwner');
 
-              final _listingType = nftProvider.listingInfo!.listingType;
-              final _listingInfo = nftProvider.listingInfo!;
+              final listingType = nftProvider.listingInfo!.listingType;
+              final listingInfo = nftProvider.listingInfo!;
 
-              final _bids = nftProvider.bids;
+              final bids = nftProvider.bids;
 
-              if (_isOwner) {
+              if (isOwner) {
                 //BIDDING
-                if (_listingType == ListingType.bidding) {
-                  if (_bids.isEmpty) {
+                if (listingType == ListingType.bidding) {
+                  if (bids.isEmpty) {
                     return BottomBar(
                       label: 'Minimum Bid',
-                      price: '${_listingInfo.price} MATIC',
+                      price: '${listingInfo.price} MATIC',
                       buttonText: '',
                       // onIconPressed: () => _openBids(_isOwner),
                       // onButtonPressed: _sellBid,
@@ -385,24 +385,24 @@ class _NFTScreenState extends State<NFTScreen> {
                       price: '${nftProvider.selectedBid!.price} MATIC',
                       buttonText: 'Sell Bid',
                       icon: Iconsax.arrow_up_2,
-                      onIconPressed: () => _openBids(_isOwner),
+                      onIconPressed: () => _openBids(isOwner),
                       onButtonPressed: () => _sellBid(nftProvider),
                     );
                   }
                 }
 
                 //Fixed price for sale
-                else if (_listingType == ListingType.fixedPriceSale) {
+                else if (listingType == ListingType.fixedPriceSale) {
                   return BottomBar(
                     label: "For Sale",
-                    price: '${_listingInfo.price} MATIC',
+                    price: '${listingInfo.price} MATIC',
                     buttonText: 'Modify Listing',
                     onButtonPressed: _modifyListing,
                   );
                 }
 
                 //Fixed price Not for sale
-                else if (_listingType == ListingType.fixedPriceNotSale) {
+                else if (listingType == ListingType.fixedPriceNotSale) {
                   return BottomBar(
                     label: "Not For Sale",
                     price: '',
@@ -412,11 +412,11 @@ class _NFTScreenState extends State<NFTScreen> {
                 }
               } else {
                 //Bidding
-                if (_listingType == ListingType.bidding) {
-                  if (_bids.isEmpty) {
+                if (listingType == ListingType.bidding) {
+                  if (bids.isEmpty) {
                     return BottomBar(
                       label: 'Minimum Bid',
-                      price: '${_listingInfo.price} MATIC',
+                      price: '${listingInfo.price} MATIC',
                       buttonText: 'Place Bid',
                       onButtonPressed: () => _placeBid(),
                     );
@@ -424,37 +424,37 @@ class _NFTScreenState extends State<NFTScreen> {
 
                   //BIDS IS NOT EMPTY
                   else {
-                    final hasUserBid = _bids.indexWhere(
+                    final hasUserBid = bids.indexWhere(
                             (bid) => bid.from == walletProvider.address.hex) !=
                         -1;
 
                     return BottomBar(
                       label: 'Highest Bid',
-                      price: '${_bids[0].price} MATIC',
+                      price: '${bids[0].price} MATIC',
                       buttonText: hasUserBid ? 'Cancel Bid' : 'Place Bid',
                       icon: Iconsax.arrow_up_2,
-                      onIconPressed: () => _openBids(_isOwner),
+                      onIconPressed: () => _openBids(isOwner),
                       onButtonPressed: () =>
-                          hasUserBid ? _cancelBid() : _placeBid(_bids[0].price),
+                          hasUserBid ? _cancelBid() : _placeBid(bids[0].price),
                     );
                   }
                 }
 
                 //Fixed Price for sale
-                else if (_listingType == ListingType.fixedPriceSale) {
+                else if (listingType == ListingType.fixedPriceSale) {
                   return BottomBar(
                     label: "Price",
-                    price: '${_listingInfo.price} MATIC',
+                    price: '${listingInfo.price} MATIC',
                     buttonText: 'Buy NFT',
-                    onButtonPressed: () => _buyNFT(_listingInfo.price),
+                    onButtonPressed: () => _buyNFT(listingInfo.price),
                   );
                 }
 
                 //Fixed Price not for sale
-                else if (_listingType == ListingType.fixedPriceNotSale) {
+                else if (listingType == ListingType.fixedPriceNotSale) {
                   return BottomBar(
                     label: "Price",
-                    price: '${_listingInfo.price} MATIC',
+                    price: '${listingInfo.price} MATIC',
                     buttonText: '',
                     onlyText: 'Not For Sale',
                   );

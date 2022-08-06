@@ -1,20 +1,12 @@
 import 'dart:io';
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
 import 'package:health/health.dart';
 
-import '../../../core/utils/debouncer.dart';
 import '../../../core/utils/utils.dart';
-import '../../../core/widgets/custom_widgets.dart';
 import '../../../provider/health_provider.dart';
-
-import 'package:iconsax/iconsax.dart';
-
-// import '../../../core/services/wallet_service.dart';
 
 class WorkoutsTab extends StatefulWidget {
   const WorkoutsTab({Key? key}) : super(key: key);
@@ -31,7 +23,6 @@ class _WorkoutsTabState extends State<WorkoutsTab> with
   GlobalKey<RefreshIndicatorState>();
 
   late TabController _tabController;
-  List<HealthDataPoint> _healthDataList = [];
   var healthPoint = <HealthDataPoint>[];
   var error = "";
   var isLoading = false;
@@ -130,7 +121,7 @@ class _WorkoutsTabState extends State<WorkoutsTab> with
                                           child: SizedBox(
                                             width: 300,
                                             height: 100,
-                                            child: Text('Total number of steps: ${steps!}'),
+                                            child: Text('Total number of steps: $steps'),
                                           ),
                                         ),
                                       ),
@@ -144,8 +135,8 @@ class _WorkoutsTabState extends State<WorkoutsTab> with
                                                 },
                                                 icon: const Icon(Icons.nordic_walking),
                                               ),
-                                              Text('${steps!} Steps',
-                                                  style: TextStyle(color: Colors.orange)
+                                              Text('$steps Steps',
+                                                  style: const TextStyle(color: Colors.orange)
                                               ),
                                             ],
                                           ),

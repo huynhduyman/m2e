@@ -15,7 +15,7 @@ class SearchTab extends StatefulWidget {
   const SearchTab({Key? key}) : super(key: key);
 
   @override
-  _SearchTabState createState() => _SearchTabState();
+  State<SearchTab> createState() => _SearchTabState();
 }
 
 class _SearchTabState extends State<SearchTab> {

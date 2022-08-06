@@ -12,31 +12,31 @@ Future<DateTime> openDatePicker({
   required DateTime lastDate,
 }) async {
   //Assinging intial date
-  DateTime _selectedDate = initalDate;
+  DateTime selectedDate = initalDate;
 
   //Check Platform and display appropriate widget
   if (Platform.isIOS) {
     await openBottomSheet(
       context: context,
       child: CupertinoDatePicker(
-        initialDateTime: _selectedDate,
+        initialDateTime: selectedDate,
         mode: CupertinoDatePickerMode.date,
         minimumDate: startDate,
         maximumDate: lastDate,
         onDateTimeChanged: (DateTime newDateTime) {
-          _selectedDate = newDateTime;
+          selectedDate = newDateTime;
         },
       ),
     );
   } else {
-    _selectedDate = await showDatePicker(
+    selectedDate = await showDatePicker(
           context: context,
-          initialDate: _selectedDate,
+          initialDate: selectedDate,
           firstDate: startDate,
           lastDate: lastDate,
         ) ??
-        _selectedDate;
+        selectedDate;
   }
 
-  return _selectedDate;
+  return selectedDate;
 }

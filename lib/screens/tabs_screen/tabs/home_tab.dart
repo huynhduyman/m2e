@@ -16,7 +16,7 @@ class HomeTab extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _HomeTabsScreenState createState() => _HomeTabsScreenState();
+  State<HomeTab> createState() => _HomeTabsScreenState();
 
 }
 

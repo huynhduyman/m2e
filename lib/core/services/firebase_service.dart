@@ -33,118 +33,38 @@ class FirebaseService {
 
   User? user;
 
-  // // auth change user stream
-  // Stream<User?> get onAuthStateChanged{
-  //   return _firebaseAuth.authStateChanges()
-  //   //.map((User? user) => _userModelFromFirebase(user));
-  //       .map(_userModelFromFirebase);
-  // }
-
-  // //create an userModel object based on Firebase User object
-  // User? _userModelFromFirebase(User? user){
-  //   if (user != null) {
-  //     return User(
-  //         uid: user.uid,
-  //         email: user.email,
-  //         displayName: user.displayName,
-  //         photoUrl: user.photoURL,
-  //         isVerified: user.emailVerified);
-  //   } else {
-  //     return null;
-  //   }
-  // }
-
-  // auth change user stream
-  // Stream<User?> get onAuthStateChanged{
-  //   return _firebaseAuth.authStateChanges()
-  //   //.map((User? user) => _userModelFromFirebase(user));
-  //       .map(_userModelFromFirebase);
-  // }
-
-  // User? user;
-
-
-
-
-  // FirebaseAuth auth = FirebaseAuth.instance;
-  // User? user;
-
-  // late FirebaseUser user;
-  // late StreamSubscription userAuthSub;
-
-  // bool get isAnonymous {
-  //   assert(user != null);
-  //   bool isAnonymousUser = true;
-  //   for (UserInfo info in user!.providerData) {
-  //     if (info.providerId == "facebook.com" ||
-  //         info.providerId == "google.com" ||
-  //         info.providerId == "password") {
-  //       isAnonymousUser = false;
-  //       break;
-  //     }
-  //   }
-  //   return isAnonymousUser;
-  // }
-  //
-  // bool get isAuthenticated {
-  //   debugPrint('get isAuthenticated');
-  //   debugPrint(user?.uid.toString());
-  //   if (user?.uid != null) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
   //SIGN UP METHOD
   Future<String?> signUp({required String email, required String password}) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email, password: password
       );
 
       User? user = _firebaseAuth.currentUser;
-      await FirebaseFirestore.instance.collection("users").doc(user?.uid).set({
-        'uid': user?.uid,
-        'email': email,
-        // 'password': password,
-      })
-      //     .then((value) {
-      //   return user?.email.toString();
-      // })
-          .onError((error, _) {
+      try {
+        await FirebaseFirestore.instance.collection("users").doc(user?.uid).set({
+          'uid': user?.uid,
+          'email': email,
+        });
+      } catch (error) {
+        debugPrint(error.toString());
         return error.toString();
-      });
+      }
       debugPrint('Save user to FirebaseFirestore');
       debugPrint(user?.email.toString());
       return user?.email.toString();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        debugPrint('The password provided is too weak.');
         return e.code.toString();
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        debugPrint('The account already exists for that email.');
         return e.code.toString();
       }
     } catch (e) {
-      print(e);
       return e.toString();
     }
-
-    // try {
-    //   await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password).then((value) async {
-    //     User? user = _firebaseAuth.currentUser;
-    //     await FirebaseFirestore.instance.collection("users").doc(user?.uid).set({
-    //       'uid': user?.uid,
-    //       'email': email,
-    //       // 'password': password,
-    //     });
-    //   });
-    //   // return _userModelFromFirebase(user);
-    //   return "Signed Up";
-    // } on FirebaseAuthException catch (e) {
-    //   return e.message.toString();
-    // }
+    return null;
   }
 
   Future<void> signInAnonymously() async {
@@ -162,14 +82,14 @@ class FirebaseService {
       UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password
       );
-      User? user = _firebaseAuth.currentUser;
+      user = _firebaseAuth.currentUser;
       debugPrint(userCredential.user?.email.toString());
       return userCredential.user?.email.toString();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        debugPrint('No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        debugPrint('Wrong password provided for that user.');
       }
       return e.code.toString();
     }
@@ -217,9 +137,9 @@ class FirebaseService {
       return null;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        debugPrint('No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        debugPrint('Wrong password provided for that user.');
       }
       return e.code.toString();
     }

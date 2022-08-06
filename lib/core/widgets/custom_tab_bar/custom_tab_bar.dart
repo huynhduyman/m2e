@@ -14,7 +14,7 @@ class CustomTabBar extends StatefulWidget {
   final List<Widget> tabs;
 
   @override
-  _CustomTabBarState createState() => _CustomTabBarState();
+  State<CustomTabBar> createState() => _CustomTabBarState();
 }
 
 class _CustomTabBarState extends State<CustomTabBar>

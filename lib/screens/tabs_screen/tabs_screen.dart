@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'tabs/wallet_tab.dart';
 import 'tabs/home_tab.dart';
-import 'tabs/search_tab.dart';
 import 'tabs/workouts_tab.dart';
 import 'tabs/user_tab.dart';
 import 'tabs/marketplace_tab.dart';

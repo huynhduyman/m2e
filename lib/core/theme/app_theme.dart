@@ -34,9 +34,7 @@ class AppTheme {
       ),
       colorScheme: const ColorScheme.light().copyWith(
         primary: _primaryColor,
-        primaryVariant: _primaryColor,
         secondary: _secondaryColorLight,
-        secondaryVariant: _scaffoldColor,
         error: _errorColorLight,
         surface: _surfaceColor,
         background: _scaffoldColor,

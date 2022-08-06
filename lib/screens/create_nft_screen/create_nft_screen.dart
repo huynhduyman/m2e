@@ -22,7 +22,7 @@ class CreateNFTScreen extends StatefulWidget {
   final Collection? collection;
 
   @override
-  _CreateNFTScreenState createState() => _CreateNFTScreenState();
+  State<CreateNFTScreen> createState() => _CreateNFTScreenState();
 }
 
 class _CreateNFTScreenState extends State<CreateNFTScreen> {

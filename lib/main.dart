@@ -1,11 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nfts/provider/auth_provider.dart';
 import 'package:nfts/provider/health_provider.dart';
 import 'package:nfts/screens/create_wallet_screen/create_wallet_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'core/services/firebase_service.dart';
 import 'firebase_options.dart';
 
 import 'core/theme/app_theme.dart';

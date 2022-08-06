@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
-import 'package:web3dart/src/credentials/address.dart';
 
 class WalletService {
   final SharedPreferences _prefs;
@@ -81,7 +80,6 @@ class WalletConnectEthereumCredentials extends Credentials {
     throw UnimplementedError();
   }
 
-  @override
   Future<String> sendTransaction(Transaction transaction) async {
     final hash = await provider.sendTransaction(
       from: transaction.from!.hex,

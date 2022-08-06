@@ -18,7 +18,7 @@ class CreateCollectionScreen extends StatefulWidget {
   const CreateCollectionScreen({Key? key}) : super(key: key);
 
   @override
-  _CreateCollectionScreenState createState() => _CreateCollectionScreenState();
+  State<CreateCollectionScreen> createState() => _CreateCollectionScreenState();
 }
 
 class _CreateCollectionScreenState extends State<CreateCollectionScreen> {

@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/animations/animations.dart';
 import '../../core/utils/utils.dart';
@@ -22,7 +21,7 @@ class CollectionScreen extends StatefulWidget {
   final Collection collection;
 
   @override
-  _CollectionScreenState createState() => _CollectionScreenState();
+  State<CollectionScreen> createState() => _CollectionScreenState();
 }
 
 class _CollectionScreenState extends State<CollectionScreen> {
@@ -34,8 +33,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
         .fetchCollectionMeta(widget.collection);
   }
 
-  _openUrl(String url) async {
-    if (!await launch(url)) {}
+  _openUrl(String url, BuildContext context) async {
+    await openUrl(url, context);
   }
 
   _createNFT() {
@@ -63,7 +62,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 return CollectionListTile(
                   image: widget.collection.image,
                   title: widget.collection.name,
-                  subtitle: 'By ' + formatAddress(widget.collection.creator),
+                  subtitle: 'By ${formatAddress(widget.collection.creator)}',
                   isFav: favProvider.isFavCollection(widget.collection),
                   onFavPressed: () =>
                       favProvider.setFavCollection(widget.collection),
@@ -131,7 +130,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             svgPath: 'assets/images/twitter.svg',
                             right: rw(space2x),
                             semanticLabel: 'twitter',
-                            onPressed: () => _openUrl(metaData.twitterUrl),
+                            onPressed: () => _openUrl(metaData.twitterUrl,context),
                           ),
                         ),
                       if (metaData.websiteUrl.isNotEmpty)
@@ -142,7 +141,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                             icon: Iconsax.global5,
                             right: rw(space2x),
                             semanticLabel: 'Website',
-                            onPressed: () => _openUrl(metaData.websiteUrl),
+                            onPressed: () => _openUrl(metaData.websiteUrl,context),
                           ),
                         ),
                       Buttons.icon(
@@ -160,7 +159,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         bottom: 0,
                         semanticLabel: 'Share',
                         onPressed: () => share(
-                          widget.collection.name + " collection",
+                          "${widget.collection.name} collection",
                           widget.collection.image,
                           metaData.description,
                         ),

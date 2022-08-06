@@ -21,7 +21,7 @@ class ModifyListingScreen extends StatefulWidget {
   final NFT nft;
 
   @override
-  _ModifyListingScreenState createState() => _ModifyListingScreenState();
+  State<ModifyListingScreen> createState() => _ModifyListingScreenState();
 }
 
 class _ModifyListingScreenState extends State<ModifyListingScreen> {
@@ -80,7 +80,7 @@ class _ModifyListingScreenState extends State<ModifyListingScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: space2x),
         child: Consumer<NFTProvider>(builder: (context, provider, child) {
-          final _listingType = provider.listingType;
+          final listingType = provider.listingType;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,8 +99,8 @@ class _ModifyListingScreenState extends State<ModifyListingScreen> {
                 children: [
                   Expanded(
                     child: SelectableContainer(
-                      isSelected: _listingType == ListingType.fixedPriceSale ||
-                          _listingType == ListingType.fixedPriceNotSale,
+                      isSelected: listingType == ListingType.fixedPriceSale ||
+                          listingType == ListingType.fixedPriceNotSale,
                       text: 'Fixed Price',
                       onPressed: () =>
                           provider.listingType = (ListingType.fixedPriceSale),
@@ -109,7 +109,7 @@ class _ModifyListingScreenState extends State<ModifyListingScreen> {
                   SizedBox(width: rw(space2x)),
                   Expanded(
                     child: SelectableContainer(
-                      isSelected: _listingType == ListingType.bidding,
+                      isSelected: listingType == ListingType.bidding,
                       text: 'Open for bid',
                       onPressed: () =>
                           provider.listingType = (ListingType.bidding),
@@ -121,7 +121,7 @@ class _ModifyListingScreenState extends State<ModifyListingScreen> {
 
               //DYNAMIC CONTENT
 
-              if (_listingType != ListingType.bidding)
+              if (listingType != ListingType.bidding)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -130,7 +130,7 @@ class _ModifyListingScreenState extends State<ModifyListingScreen> {
                       style: Theme.of(context).textTheme.headline3,
                     ),
                     CupertinoSwitch(
-                      value: _listingType == ListingType.fixedPriceSale,
+                      value: listingType == ListingType.fixedPriceSale,
                       activeColor: Theme.of(context).primaryColor,
                       onChanged: (bool value) => provider.listingType = (value
                           ? ListingType.fixedPriceSale
@@ -139,16 +139,16 @@ class _ModifyListingScreenState extends State<ModifyListingScreen> {
                   ],
                 ),
 
-              if (_listingType != ListingType.bidding)
+              if (listingType != ListingType.bidding)
                 SizedBox(height: rh(space3x)),
 
-              if (_listingType != ListingType.fixedPriceNotSale)
+              if (listingType != ListingType.fixedPriceNotSale)
                 FadeAnimation(
                   child: Form(
                     key: _formKey,
                     child: CustomTextFormField(
                       controller: _priceController,
-                      labelText: _listingType == ListingType.bidding
+                      labelText: listingType == ListingType.bidding
                           ? 'Minimum bid price in MATIC '
                           : 'Fixed Price in MATIC',
                       validator: validator,
@@ -158,7 +158,7 @@ class _ModifyListingScreenState extends State<ModifyListingScreen> {
                   ),
                 ),
 
-              if (_listingType != ListingType.fixedPriceNotSale)
+              if (listingType != ListingType.fixedPriceNotSale)
                 SizedBox(height: rh(space4x)),
 
               Buttons.flexible(

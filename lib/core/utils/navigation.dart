@@ -20,6 +20,7 @@ class Navigation {
     } else if (name != null) {
       return Navigator.of(context).pushNamed(name);
     }
+    return null;
   }
 
   //Replace current page
@@ -89,5 +90,6 @@ class Navigation {
         ModalRoute.withName(popTill),
       );
     }
+    return null;
   }
 }

@@ -2,15 +2,12 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:web3dart/crypto.dart';
 // import 'package:web3dart/src/crypto/formatting.dart';
 
 import '../core/services/contract_service.dart';
 import '../core/services/gasprice_service.dart';
 import '../core/services/wallet_service.dart';
-import '../config/config.dart';
 enum WalletState { empty, loading, loaded, success, error, logOut }
 
 class WalletProvider with ChangeNotifier {
@@ -48,7 +45,7 @@ class WalletProvider with ChangeNotifier {
 
   getBalance() async {
     balance = await _client.getBalance(address);
-    debugPrint('balance: ${balance}');
+    debugPrint('balance: $balance');
     _handleLoaded();
     notifyListeners();
   }
@@ -188,7 +185,7 @@ class WalletProvider with ChangeNotifier {
     cred = _walletService.initalizeWallet();
     // address = EthereumAddress.fromHex(publicKey);
     address = await cred.extractAddress();
-    debugPrint('address: ${address}');
+    debugPrint('address: $address');
     getBalance();
 
     _handleLoaded();
@@ -197,7 +194,7 @@ class WalletProvider with ChangeNotifier {
   initializeWalletWithThirdParty(String publicKey) async {
     // cred = _walletService.initalizeWallet();
     address = EthereumAddress.fromHex(publicKey);
-    debugPrint('address: ${address}');
+    debugPrint('address: $address');
     getBalance();
 
     _handleLoaded();
@@ -227,7 +224,7 @@ class WalletProvider with ChangeNotifier {
     try {
       cred = _walletService.initalizeWalletMetaMask(provider);
       address = EthereumAddress.fromHex(publicKey);
-      debugPrint('address: ${address}');
+      debugPrint('address: $address');
       // address = await cred.extractAddress();
       // cred.extractAddress();
 

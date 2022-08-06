@@ -1,26 +1,14 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:nfts/provider/auth_provider.dart';
-import 'package:nfts/screens/user_screen/sign_in_user_info_screen.dart';
-import 'package:nfts/screens/user_screen/sign_up_user_info_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/services/firebase_service.dart';
-import '../../core/services/image_picker_service.dart';
-import '../../core/utils/debouncer.dart';
 import '../../core/utils/utils.dart';
 import '../../core/widgets/custom_widgets.dart';
-import '../../provider/wallet_provider.dart';
-import '../tabs_screen/tabs/user_tab.dart';
-import '../tabs_screen/tabs_screen.dart';
 
 class VerifyUserInfoScreen extends StatefulWidget with WidgetsBindingObserver {
   const VerifyUserInfoScreen({Key? key}) : super(key: key);
@@ -30,13 +18,9 @@ class VerifyUserInfoScreen extends StatefulWidget with WidgetsBindingObserver {
 }
 
 class _VerifyUserInfoScreen extends State<VerifyUserInfoScreen> with WidgetsBindingObserver {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String errMessage = '';
   String statusMessage = 'Initialized';
-  final Debouncer _debouncer = Debouncer(milliseconds: 2000);
   bool _isEmailVerified = false;
-  final bool _sentEmailVerified = false;
-  bool _isLoading = false;
   String _email = '';
   late Timer _timer;
   // final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -70,7 +54,7 @@ class _VerifyUserInfoScreen extends State<VerifyUserInfoScreen> with WidgetsBind
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
 
-    print('state = $state');
+    debugPrint('state = $state');
 
     DateFormat dateFormat = DateFormat("HH:mm:ss");
     String dateString = dateFormat.format(DateTime.now());
@@ -144,7 +128,6 @@ class _VerifyUserInfoScreen extends State<VerifyUserInfoScreen> with WidgetsBind
     if (isEmailVerified == true) {
       setState(() {
         _isEmailVerified = true;
-        _isLoading = false;
       });
       _timer.cancel();
       _back();
@@ -156,12 +139,6 @@ class _VerifyUserInfoScreen extends State<VerifyUserInfoScreen> with WidgetsBind
     Navigation.pop(context);
   }
 
-  _navigate(Widget screen) async {
-    // Navigation.pushReplacement(context, screen: screen);
-    scheduleMicrotask(() {
-      Navigation.pushReplacement(context, screen: screen);
-    });
-  }
 
   Future<void> sendEmailVerification() async {
     debugPrint(_isEmailVerified.toString());
@@ -179,11 +156,10 @@ class _VerifyUserInfoScreen extends State<VerifyUserInfoScreen> with WidgetsBind
   Future<void> _submit() async {
     try {
       await sendEmailVerification();
-      _isLoading = true;
       debugPrint('sent Verify success');
       _scaffoldMessenger('Sent a link to the your email $_email');
       refreshFirebaseUser();
-      _timer = Timer.periodic(Duration(seconds: 5), (Timer _) async {
+      _timer = Timer.periodic(const Duration(seconds: 5), (Timer _) async {
         await refreshFirebaseUser();
       });
 
@@ -199,16 +175,13 @@ class _VerifyUserInfoScreen extends State<VerifyUserInfoScreen> with WidgetsBind
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
           debugPrint(authProvider.state.toString());
-          bool isLoading  = false;
           if (authProvider.state == AuthState.loading) {
-            isLoading = true;
           }
           if ( _isEmailVerified == true) {
             Future.delayed(const Duration(seconds: 3));
             // return _back();
 
           }
-          final userEmail = authProvider.getUser?.email;
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

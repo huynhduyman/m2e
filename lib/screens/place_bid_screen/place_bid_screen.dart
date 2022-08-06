@@ -19,7 +19,7 @@ class PlaceBidScreen extends StatefulWidget {
   final double? highestBid;
 
   @override
-  _PlaceBidScreenState createState() => _PlaceBidScreenState();
+  State<PlaceBidScreen> createState() => _PlaceBidScreenState();
 }
 
 class _PlaceBidScreenState extends State<PlaceBidScreen> {

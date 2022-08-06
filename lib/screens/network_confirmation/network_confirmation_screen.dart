@@ -8,14 +8,11 @@ import '../../locator.dart';
 import '../../provider/app_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:nfts/core/services/notification_service.dart';
-import '../splash_screen/splash_screen.dart';
 
 import '../../core/utils/utils.dart';
 import '../../core/widgets/custom_widgets.dart';
 import '../../provider/wallet_provider.dart';
-import '../../core/services/wallet_service.dart';
 import '../../config/config.dart';
 
 class NetworkConfirmationScreen extends StatefulWidget {
@@ -38,7 +35,7 @@ class _NetworkConfirmationScreenState extends State<NetworkConfirmationScreen> {
     }
     debugPrint(url);
 
-    if (await launch(url)) {}
+    if (await openUrl(url,context)) {}
 
     // if (await canLaunch(url)) {
     //   await launch(url);
@@ -47,14 +44,9 @@ class _NetworkConfirmationScreenState extends State<NetworkConfirmationScreen> {
     // }
   }
 
-  _skipForNow(context) async {
-    await Provider.of<AppProvider>(context, listen: false).initialize();
-
-    Navigation.popAllAndPush(context, screen: const SplashScreen());
-  }
 
   void _showNotification(Map<String, dynamic> strNotification) async {
-    print(strNotification);
+    debugPrint(strNotification.toString());
     // List<Data> dataList = strNotification.map((i) => Data.fromJson(i)).toList();
     await _notificationService.showNotifications(strNotification);
   }

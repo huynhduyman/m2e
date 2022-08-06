@@ -15,7 +15,7 @@ class CreatorScreen extends StatefulWidget {
   final String owner;
 
   @override
-  _CreatorScreenState createState() => _CreatorScreenState();
+  State<CreatorScreen> createState() => _CreatorScreenState();
 }
 
 class _CreatorScreenState extends State<CreatorScreen>
@@ -47,6 +47,7 @@ class _CreatorScreenState extends State<CreatorScreen>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: Consumer<CreatorProvider>(builder: (context, provider, child) {
         final user = provider.user;
@@ -126,7 +127,7 @@ class _CreatorScreenState extends State<CreatorScreen>
                               right: rw(space2x),
                               semanticLabel: 'Share',
                               onPressed: () => share(
-                                " Creator " + provider.user.uAddress.hex,
+                                " Creator ${provider.user.uAddress.hex}",
                                 provider.user.image,
                                 provider.user.uAddress.hex,
                               ),
@@ -192,7 +193,7 @@ class _CreatorScreenState extends State<CreatorScreen>
                               heroTag: '${nft.cAddress}-${nft.tokenId}',
                               image: nft.image,
                               title: nft.name,
-                              subtitle: 'By ' + formatAddress(nft.creator),
+                              subtitle: 'By ${formatAddress(nft.creator)}',
                               isFav: favProvider.isFavNFT(nft),
                               onFavPressed: () => favProvider.setFavNFT(nft),
                             );

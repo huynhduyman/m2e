@@ -54,7 +54,7 @@ class AuthProvider with ChangeNotifier {
 
       if (googleUser == null) {
         debugPrint("googleUser = null");
-      };
+      }
       _user = googleUser;
 
       // Obtain the auth details from the request
@@ -66,7 +66,7 @@ class AuthProvider with ChangeNotifier {
         idToken: googleAuth?.idToken,
       );
 
-      final userCredential = await _firebase.signInWithCredential(credential);
+      await _firebase.signInWithCredential(credential);
       debugPrint("AuthProvider Provider signInWithGoogle!");
 
 
@@ -99,7 +99,7 @@ class AuthProvider with ChangeNotifier {
     try {
     final userEmail = await _firebase.signUp(email: email, password: password);
       if (userEmail == email) {
-        _handleLoaded();
+        _handleSuccess();
         notifyListeners();
         return userEmail;
       } else {
@@ -224,7 +224,7 @@ class AuthProvider with ChangeNotifier {
     state = AuthState.success;
     errMessage = '';
     notifyListeners();
-    // Timer(const Duration(milliseconds: 450), _handleEmpty);
+    Timer(const Duration(milliseconds: 450), _handleEmpty);
   }
 
   void _handleError(e) {

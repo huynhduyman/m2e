@@ -1,16 +1,12 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../config/gql_query.dart';
 import '../core/services/graphql_service.dart';
 import '../core/services/wallet_service.dart';
-import '../core/services/firebase_service.dart';
-import '../core/utils/utils.dart';
 import '../models/collection.dart';
 import '../models/nft.dart';
-import '../screens/create_wallet_screen/create_wallet_screen.dart';
 import '../screens/wallet_connect_thirdparty/wallet_connect_thirdparty.dart';
 import 'fav_provider.dart';
 import 'user_provider.dart';
@@ -66,7 +62,7 @@ class AppProvider with ChangeNotifier {
   initialize() async {
 
     // final stateAuthProvider = Provider.of<AuthProvider>(context, listen: false);
-    debugPrint(_authProvider.isSignedIn!.toString());
+    debugPrint(_authProvider.isSignedIn.toString());
     debugPrint(_authProvider.getUser.toString());
     if (_authProvider.isSignedIn == false) {
       _handleUnauthenticated();
@@ -76,8 +72,8 @@ class AppProvider with ChangeNotifier {
     final privateKey = _walletService.getPrivateKey();
     final publicKey = _walletService.getPublicKey();
     final lastTxHash = _walletService.getLastTxHash();
-    debugPrint('AppProvider initialize publicKey: ${publicKey}');
-    debugPrint('AppProvider initialize lastTxHash: ${lastTxHash}');
+    debugPrint('AppProvider initialize publicKey: $publicKey');
+    debugPrint('AppProvider initialize lastTxHash: $lastTxHash');
 
     if (publicKey.isEmpty) {
       _handleNotWalletConnected();
@@ -86,7 +82,7 @@ class AppProvider with ChangeNotifier {
     else if (privateKey.isEmpty && publicKey.isNotEmpty) {
       //FIRST - INITIALIZE WALLET
       await _walletProvider.initializeWalletWithThirdParty(publicKey);
-      await WalletConnectThirdparty();
+      const WalletConnectThirdparty();
       //HOME SCREEN DATA
       await fetchInitialData();
 

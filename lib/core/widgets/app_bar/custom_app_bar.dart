@@ -7,7 +7,7 @@ import '../../utils/ui_helper.dart';
 import '../custom_widgets.dart';
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({
+  const CustomAppBar({super.key,
     this.title = '',
     this.isTitleCentered,
     this.hasBackButton = true,

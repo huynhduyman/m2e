@@ -33,9 +33,10 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
     );
   }
 
-  _createWallet() async {
+  _createWallet(BuildContext context) async {
     await Provider.of<WalletProvider>(context, listen: false).createWallet();
 
+    if (!mounted) return;
     Navigation.push(
       context,
       screen: const TestMaticScreen(),
@@ -47,7 +48,6 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
     if (FirebaseAuth.instance.currentUser != null) {
       debugPrint('CreateWalletScreen User is signed in!');
       debugPrint(FirebaseAuth.instance.currentUser?.uid);
-      final user = FirebaseAuth.instance.currentUser!;
     }
 
     return Scaffold(
@@ -91,7 +91,7 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
             CustomOutlinedButton(
               width: double.infinity,
               text: 'Create a new wallet',
-              onPressed: _createWallet,
+              onPressed: _createWallet(context),
             ),
           ],
         ),

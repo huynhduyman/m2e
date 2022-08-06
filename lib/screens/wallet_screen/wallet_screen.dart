@@ -13,7 +13,7 @@ class WalletScreen extends StatefulWidget {
   const WalletScreen({Key? key}) : super(key: key);
 
   @override
-  _WalletScreenState createState() => _WalletScreenState();
+  State<WalletScreen> createState() => _WalletScreenState();
 }
 
 class _WalletScreenState extends State<WalletScreen> {
@@ -62,7 +62,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         SizedBox(height: rh(space4x)),
                         DataTile(
                           label: 'Wallet Balance',
-                          value: formatBalance(provider.balance) + ' MATIC',
+                          value: '${formatBalance(provider.balance)} MATIC',
                         ),
                         SizedBox(height: rh(space3x)),
                         DataTile(

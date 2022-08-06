@@ -17,7 +17,7 @@ class UpdateListingScreen extends StatefulWidget {
   final NFT? nft;
 
   @override
-  _UpdateListingScreenState createState() => _UpdateListingScreenState();
+  State<UpdateListingScreen> createState() => _UpdateListingScreenState();
 }
 
 class _UpdateListingScreenState extends State<UpdateListingScreen> {

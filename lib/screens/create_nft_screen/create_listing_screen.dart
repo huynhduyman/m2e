@@ -27,7 +27,7 @@ class CreateNFTListingScreen extends StatefulWidget {
   final Collection collection;
 
   @override
-  _CreateNFTListingScreenState createState() => _CreateNFTListingScreenState();
+  State<CreateNFTListingScreen> createState() => _CreateNFTListingScreenState();
 }
 
 class _CreateNFTListingScreenState extends State<CreateNFTListingScreen> {
@@ -36,7 +36,7 @@ class _CreateNFTListingScreenState extends State<CreateNFTListingScreen> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _royaltiesController = TextEditingController();
 
-  _mintNFT() async {
+  _mintNFT(BuildContext context) async {
     final provider = Provider.of<NFTProvider>(context, listen: false);
 
     if (_formKey.currentState!.validate()) {
@@ -49,9 +49,11 @@ class _CreateNFTListingScreenState extends State<CreateNFTListingScreen> {
       final transaction =
           await provider.buildTransaction(listing, widget.collection);
 
-      Provider.of<WalletProvider>(context, listen: false)
+      if (!mounted) return;
+      await Provider.of<WalletProvider>(context, listen: false)
           .getTransactionFee(transaction);
 
+      if (!mounted) return;
       Navigation.push(
         context,
         screen: ConfirmationScreen(
@@ -77,7 +79,7 @@ class _CreateNFTListingScreenState extends State<CreateNFTListingScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: space2x),
         child: Consumer<NFTProvider>(builder: (context, provider, child) {
-          final _listingType = provider.listingType;
+          final listingType = provider.listingType;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,8 +97,8 @@ class _CreateNFTListingScreenState extends State<CreateNFTListingScreen> {
                 children: [
                   Expanded(
                     child: SelectableContainer(
-                      isSelected: _listingType == ListingType.fixedPriceSale ||
-                          _listingType == ListingType.fixedPriceNotSale,
+                      isSelected: listingType == ListingType.fixedPriceSale ||
+                          listingType == ListingType.fixedPriceNotSale,
                       text: 'Fixed Price',
                       onPressed: () =>
                           provider.listingType = (ListingType.fixedPriceSale),
@@ -105,7 +107,7 @@ class _CreateNFTListingScreenState extends State<CreateNFTListingScreen> {
                   SizedBox(width: rw(space2x)),
                   Expanded(
                     child: SelectableContainer(
-                      isSelected: _listingType == ListingType.bidding,
+                      isSelected: listingType == ListingType.bidding,
                       text: 'Open for bid',
                       onPressed: () =>
                           provider.listingType = (ListingType.bidding),
@@ -117,7 +119,7 @@ class _CreateNFTListingScreenState extends State<CreateNFTListingScreen> {
 
               //DYNAMIC CONTENT
 
-              if (_listingType != ListingType.bidding)
+              if (listingType != ListingType.bidding)
                 FadeAnimation(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -127,7 +129,7 @@ class _CreateNFTListingScreenState extends State<CreateNFTListingScreen> {
                         style: Theme.of(context).textTheme.headline3,
                       ),
                       CupertinoSwitch(
-                        value: _listingType == ListingType.fixedPriceSale,
+                        value: listingType == ListingType.fixedPriceSale,
                         activeColor: Theme.of(context).primaryColor,
                         onChanged: (bool value) => provider.listingType = (value
                             ? ListingType.fixedPriceSale
@@ -137,7 +139,7 @@ class _CreateNFTListingScreenState extends State<CreateNFTListingScreen> {
                   ),
                 ),
 
-              if (_listingType != ListingType.bidding)
+              if (listingType != ListingType.bidding)
                 SizedBox(height: rh(space3x)),
 
               Form(
@@ -152,13 +154,13 @@ class _CreateNFTListingScreenState extends State<CreateNFTListingScreen> {
                       textInputType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                     ),
-                    if (_listingType != ListingType.fixedPriceNotSale)
+                    if (listingType != ListingType.fixedPriceNotSale)
                       SizedBox(height: rh(space2x)),
-                    if (_listingType != ListingType.fixedPriceNotSale)
+                    if (listingType != ListingType.fixedPriceNotSale)
                       FadeAnimation(
                         child: CustomTextFormField(
                           controller: _priceController,
-                          labelText: _listingType == ListingType.bidding
+                          labelText: listingType == ListingType.bidding
                               ? 'Minimum bid price in MATIC'
                               : 'Fixed Price in MATIC',
                           validator: validator,
@@ -176,7 +178,7 @@ class _CreateNFTListingScreenState extends State<CreateNFTListingScreen> {
                 width: double.infinity,
                 context: context,
                 text: 'Mint NFT',
-                onPressed: _mintNFT,
+                onPressed: _mintNFT(context),
               ),
               const Spacer(),
               Center(

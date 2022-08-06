@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/utils/utils.dart';
 import '../../core/widgets/custom_widgets.dart';
@@ -15,7 +14,7 @@ class WalletInitScreen extends StatefulWidget {
   const WalletInitScreen({Key? key}) : super(key: key);
 
   @override
-  _WalletInitScreenState createState() => _WalletInitScreenState();
+  State<WalletInitScreen> createState() => _WalletInitScreenState();
 }
 
 class _WalletInitScreenState extends State<WalletInitScreen> {
@@ -23,18 +22,14 @@ class _WalletInitScreenState extends State<WalletInitScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  //Github source code
-  _navigateToGithub() async {
-    if (await launch('https://github.com/Hrushi2406/nft-marketplace')) {}
-  }
-
-  _next() async {
+  _next(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       await Provider.of<WalletProvider>(context, listen: false)
           .initializeFromKey(_keyController.text);
 
+      if (!mounted) return;
       await Provider.of<AppProvider>(context, listen: false).initialize();
-
+      if (!mounted) return;
       Navigation.popAllAndPush(context, screen: const SplashScreen());
     }
   }
@@ -105,7 +100,7 @@ class _WalletInitScreenState extends State<WalletInitScreen> {
                 width: double.infinity,
                 context: context,
                 text: 'Next',
-                onPressed: _next,
+                onPressed: _next(context),
               ),
 
               SizedBox(height: rh(space5x)),
@@ -130,7 +125,10 @@ class _WalletInitScreenState extends State<WalletInitScreen> {
               Buttons.text(
                 context: context,
                 text: 'Have a look at our code',
-                onPressed: _navigateToGithub,
+                onPressed: () => openUrl(
+                  'https://github.com/huynhduyman/nft-marketplace',
+                  context,
+                ),
               ),
             ],
           ),

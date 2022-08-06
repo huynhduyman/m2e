@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -58,7 +59,7 @@ String formatBalance(EtherAmount? balance, [int precision = 4]) =>
         : balance.getValueInUnit(EtherUnit.ether).toStringAsFixed(precision);
 
 String formatAddress(String address) =>
-    address.substring(0, 4) + '...' + address.substring(38, 42);
+    '${address.substring(0, 4)}...${address.substring(38, 42)}';
 
 enum ListingType {
   fixedPriceSale,
@@ -92,9 +93,7 @@ share(
 
     await Share.shareFiles(
       [path],
-      text: 'Have a look at ' +
-          title +
-          ' on nfts. Download here https://drive.google.com/file/d/1uf0kYn1UBVupNQNmI_R4ak3_o87wN2_1/view?usp=sharing',
+      text: 'Have a look at $title on nfts. Download here https://drive.google.com/file/d/1uf0kYn1UBVupNQNmI_R4ak3_o87wN2_1/view?usp=sharing',
       subject: description + link,
     );
   } catch (e) {
@@ -104,7 +103,11 @@ share(
 }
 
 openUrl(String url, BuildContext context) async {
-  if (await canLaunch(url)) {
-    await launch(url);
-  }
+  // if (await canLaunch(url)) {
+  //   await launch(url);
+  // }
+  await canLaunchUrl(Uri.parse(url))
+      ? await launchUrl(Uri.parse(url))
+      : throw 'Could not launch $url';
 }
+

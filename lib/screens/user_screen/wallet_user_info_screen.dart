@@ -89,7 +89,7 @@ class WalletConnectEthereumCredentials extends CustomTransactionSender {
 
 class _WalletUserInfoScreenState extends State<WalletUserInfoScreen> with WidgetsBindingObserver {
   String statusMessage = 'Initialized';
-  String _displayUri = ''; // QR Code for OpenConnect but not used
+// QR Code for OpenConnect but not used
 
   var logger = Logger(printer: SimpleLogPrinter(''));
   late String basePath;
@@ -199,6 +199,7 @@ class _WalletUserInfoScreenState extends State<WalletUserInfoScreen> with Widget
           WalletConnectEthereumCredentials(provider: provider);
 
           // Call Init WalletProvider
+          if (!mounted) return;
           await Provider.of<WalletProvider>(context, listen: false).initializeFromMetaMask(provider,session.accounts[0]);
         }
       }
@@ -368,7 +369,6 @@ class _WalletUserInfoScreenState extends State<WalletUserInfoScreen> with Widget
           chainId: 1,
           onDisplayUri: (uri) async {
             setState(() {
-              _displayUri = uri;
               logger.d('_displayUri updated with $uri');
             });
 
@@ -429,7 +429,6 @@ class _WalletUserInfoScreenState extends State<WalletUserInfoScreen> with Widget
 
   final TextEditingController _keyController = TextEditingController();
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   /// The wallet connect client, sometimes loses the webSocket connection when the app is suspended
   @override

@@ -27,8 +27,8 @@ class FavProvider with ChangeNotifier {
     final key = _prefs.getString('user_public_key')!;
 
     final collections =
-        jsonDecode(_prefs.getString(key + '-' + kFavCollection) ?? '[]');
-    final nfts = jsonDecode(_prefs.getString(key + '-' + kFavNFT) ?? '[]');
+        jsonDecode(_prefs.getString('$key-$kFavCollection') ?? '[]');
+    final nfts = jsonDecode(_prefs.getString('$key-$kFavNFT') ?? '[]');
 
     favCollections =
         collections.map<Collection>((c) => Collection.fromJson(c)).toList();
@@ -48,7 +48,7 @@ class FavProvider with ChangeNotifier {
     }
     //Encode and save
     await _prefs.setString(
-        key + '-' + kFavCollection, jsonEncode(favCollections));
+        '$key-$kFavCollection', jsonEncode(favCollections));
 
     notifyListeners();
   }
@@ -62,7 +62,7 @@ class FavProvider with ChangeNotifier {
       favNFT.add(nft);
     }
     //Encode and save
-    await _prefs.setString(key + '-' + kFavNFT, jsonEncode(favNFT));
+    await _prefs.setString('$key-$kFavNFT', jsonEncode(favNFT));
 
     notifyListeners();
   }

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -23,7 +22,6 @@ import 'package:web3dart/web3dart.dart';
 import '../../core/utils/utils.dart';
 import '../../core/widgets/custom_widgets.dart';
 import '../../provider/wallet_provider.dart';
-import '../../provider/app_provider.dart';
 import 'widgets/transaction_fee_widget.dart';
 
 import '../../constants.dart';
@@ -47,7 +45,7 @@ late WalletConnect walletConnect;
 late BlockchainFlavor blockchainFlavor;
 late WalletConnectRegistryListing walletListing;
 late Credentials _credentials;
-late Web3Client _client;
+// late Web3Client _client;
 bool visible = false;
 String? stringTxnHash;
 String? nftStoreUri;
@@ -73,16 +71,15 @@ class ConfirmationScreen extends StatefulWidget with WidgetsBindingObserver {
   final VoidCallback? onConfirmation;
 
   @override
-  _ConfirmationScreenState createState() => _ConfirmationScreenState();
+  State<ConfirmationScreen> createState() => _ConfirmationScreenState();
 }
 
 class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBindingObserver {
 
   String statusMessage = 'Initialized';
-  String _displayUri = ''; // QR Code for OpenConnect but not used
+// QR Code for OpenConnect but not used
 
   final TextEditingController _keyController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   /// Initialize Global Settings based on blockchain selected
   ///
@@ -151,8 +148,9 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
           blockchainFlavor = BlockchainFlavorExtention.fromChainId(chainId);
         });
 
-        if (minter != null) {
-          _client = Web3Client(session.rpcUrl, Client());
+        if (minter.isNotEmpty) {
+          // _client = Web3Client(session.rpcUrl, Client());
+          Web3Client(session.rpcUrl, Client());
           EthereumWalletConnectProvider provider = EthereumWalletConnectProvider(walletConnect);
           _credentials = WalletConnectEthereumCredentials(provider: provider);
           //
@@ -174,7 +172,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
           // EtherAmount balance = ethClient.getBalance(credentials.address);
           // print(balance.getValueInUnit(EtherUnit.ether));
 
-          logger.w('Credentials web3dart - ${_credentials}.');
+          logger.w('Credentials web3dart - $_credentials.');
           // scheduleMicrotask(() {
           //   Navigation.popAllAndPush(
           //     context,
@@ -306,7 +304,6 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
           chainId: 1,
           onDisplayUri: (uri) async {
             setState(() {
-              _displayUri = uri;
               logger.d('_displayUri updated with $uri');
             });
 
@@ -315,7 +312,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
 
             // IOS users have already chosen wallet, so customize the launcher
             if (Platform.isIOS) {
-              uri = walletListing.mobile.universal + '/wc?uri=${Uri.encodeComponent(uri)}';
+              uri = '${walletListing.mobile.universal}/wc?uri=${Uri.encodeComponent(uri)}';
             }
             // Else
             // - Android users will choose their walled from the OS prompt
@@ -385,7 +382,6 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
           chainId: 1,
           onDisplayUri: (uri) async {
             setState(() {
-              _displayUri = uri;
               logger.d('_displayUri updated with $uri');
             });
 
@@ -394,7 +390,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
 
             // IOS users have already chosen wallet, so customize the launcher
             if (Platform.isIOS) {
-              uri = walletListing.mobile.universal + '/wc?uri=${Uri.encodeComponent(uri)}';
+              uri = '${walletListing.mobile.universal}/wc?uri=${Uri.encodeComponent(uri)}';
             }
             // Else
             // - Android users will choose their walled from the OS prompt
@@ -489,7 +485,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
           // Present user with list of supported wallets (IOS)
           // log(decodedResponse!['listings'].values.toString());
 
-          for (Map<String, dynamic> entry in decodedResponse!['listings'].values) {
+          for (Map<String, dynamic> entry in decodedResponse['listings'].values) {
             // log(entry.toString());
             if (entry.values.isNotEmpty) {
               listings.add(WalletConnectRegistryListing.fromMap(entry));
@@ -530,7 +526,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
         // IOS has selected a wallet listing from the WalletConnect Registry to use
         logger
             .d('Launching configured wallet ${walletListing.name} using universal link ${walletListing.mobile.universal}');
-        walletConnectUri = walletListing.mobile.universal + '/wc?uri=${Uri.encodeComponent(walletConnectTopicVersion)}';
+        walletConnectUri = '${walletListing.mobile.universal}/wc?uri=${Uri.encodeComponent(walletConnectTopicVersion)}';
       }
       bool result = await launchUrl(Uri.parse(walletConnectUri), mode: LaunchMode.externalApplication);
       if (result == false) {
@@ -547,6 +543,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
       logger.e('walletConnector sendCustomRequest.');
 
       // Ask WalletConnect wallet to sign the request
+      if (!mounted) return;
       final provider = Provider.of<WalletProvider>(context, listen: false);
       // logger.e('walletConnector sendCustomRequest : sendTransactionWithThirdParty transactionInfo: ');
       // debugPrint('transactionInfo: ${provider.transactionInfo.toString()}');
@@ -593,7 +590,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
       // IOS has selected a wallet listing from the WalletConnect Registry to use
       logger
           .d('Launching configured wallet ${walletListing.name} using universal link ${walletListing.mobile.universal}');
-      walletConnectUri = walletListing.mobile.universal + '/wc?uri=${Uri.encodeComponent(walletConnectTopicVersion)}';
+      walletConnectUri = '${walletListing.mobile.universal}/wc?uri=${Uri.encodeComponent(walletConnectTopicVersion)}';
     }
     bool result = await launchUrl(Uri.parse(walletConnectUri), mode: LaunchMode.externalApplication);
     if (result == false) {
@@ -610,12 +607,15 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
     logger.e('walletConnector sendCustomRequest.');
 
     // Ask WalletConnect wallet to sign the request
-    final provider = Provider.of<WalletProvider>(context, listen: false);
-    // logger.e('walletConnector sendCustomRequest : sendTransactionWithThirdParty transactionInfo: ');
-    // debugPrint('transactionInfo: ${provider.transactionInfo.toString()}');
-    lastTxHash = await provider.sendTransactionWithThirdParty(_credentials,provider.transactionInfo!);
-    // provider.sendTransactionWithThirdParty(_credentials,provider.transactionInfo!);
-    logger.e('lastTxHash $lastTxHash .');
+    if (mounted) {
+      final provider = Provider.of<WalletProvider>(context, listen: false);
+      // logger.e('walletConnector sendCustomRequest : sendTransactionWithThirdParty transactionInfo: ');
+      // debugPrint('transactionInfo: ${provider.transactionInfo.toString()}');
+      lastTxHash = await provider.sendTransactionWithThirdParty(_credentials,provider.transactionInfo!);
+      // provider.sendTransactionWithThirdParty(_credentials,provider.transactionInfo!);
+      logger.e('lastTxHash $lastTxHash .');
+
+    }
 
     return lastTxHash;
   }
@@ -629,7 +629,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
   void initState() {
     super.initState();
     // Register observer so we can see app lifecycle changes.
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     init(blockchain: BlockchainFlavor.mumbai);
     initWalletConnect();
   }
@@ -667,7 +667,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> with WidgetsBin
     _keyController.dispose();
     super.dispose();
     // Remove observer for app lifecycle changes.
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override

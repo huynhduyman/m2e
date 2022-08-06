@@ -1,23 +1,15 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:nfts/provider/auth_provider.dart';
 import 'package:nfts/screens/user_screen/sign_in_user_info_screen.dart';
-import 'package:nfts/screens/user_screen/sign_up_user_info_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/services/firebase_service.dart';
-import '../../core/services/image_picker_service.dart';
 import '../../core/utils/utils.dart';
 import '../../core/widgets/custom_widgets.dart';
-import '../../provider/wallet_provider.dart';
-import '../tabs_screen/tabs_screen.dart';
 
 class ForgotPassWordInfoScreen extends StatefulWidget {
   const ForgotPassWordInfoScreen({Key? key}) : super(key: key);
@@ -86,17 +78,6 @@ class _ForgotPassWordInfoScreen extends State<ForgotPassWordInfoScreen> {
     });
   }
 
-  _register() {
-    // Provider.of<AuthProvider>(context, listen: false).signInAnonymously();
-    // AuthService(FirebaseAuth.instance).logInAnonymously();
-
-    // AuthService(FirebaseAuth.instance).login(email, password);
-    // AuthService(FirebaseAuth.instance).signUp(email, password);
-    Navigation.popAllAndPush(
-      context,
-      screen: const SignUpUserInfoScreen(),
-    );
-  }
 
   Uint8List? bytes;
 
@@ -148,7 +129,7 @@ class _ForgotPassWordInfoScreen extends State<ForgotPassWordInfoScreen> {
                       labelText: 'Email',
                       validator: emailValidator,
                       textInputType: TextInputType.emailAddress,
-                      suffix: Icon(Icons.email),
+                      suffix: const Icon(Icons.email),
                     ),
                     SizedBox(height: rh(space2x)),
                   ],

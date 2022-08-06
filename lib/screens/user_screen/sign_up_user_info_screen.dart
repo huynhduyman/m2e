@@ -1,20 +1,13 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:nfts/provider/auth_provider.dart';
 import 'package:nfts/screens/user_screen/sign_in_user_info_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/utils/utils.dart';
 import '../../core/widgets/custom_widgets.dart';
-import '../create_wallet_screen/create_wallet_screen.dart';
-import '../splash_screen/splash_screen.dart';
 import '../tabs_screen/tabs_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -140,220 +133,218 @@ class _SignUpUserInfoScreenState extends State<SignUpUserInfoScreen> {
         child: Scaffold(
 
           backgroundColor: Colors.transparent,
-          body: Container(
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: space2x),
+
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: space2x),
 
-              child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // const CustomAppBar(),
 
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // const CustomAppBar(),
-
-                    SizedBox(height: rh(space6x)),
-                    Center(
-                      child: UpperCaseText(
-                        'Welcome to nfts.',
-                        style: Theme.of(context).textTheme.headline2,
-                      ),
+                  SizedBox(height: rh(space6x)),
+                  Center(
+                    child: UpperCaseText(
+                      'Welcome to nfts.',
+                      style: Theme.of(context).textTheme.headline2,
                     ),
+                  ),
 
-                    SizedBox(height: rh(space4x)),
+                  SizedBox(height: rh(space4x)),
 
-                    Center(
-                      child: UpperCaseText(
-                        'SignUp Page',
-                        style: Theme.of(context).textTheme.headline2,
-                      ),
+                  Center(
+                    child: UpperCaseText(
+                      'SignUp Page',
+                      style: Theme.of(context).textTheme.headline2,
                     ),
-                    Text(
-                      'By signing up, you will receive emails about CoinDesk product updates, events and marketing and you agree to our terms of services and privacy policy.',
-                      style: Theme.of(context).textTheme.caption,
-                      textAlign: TextAlign.center,
-                    ),
+                  ),
+                  Text(
+                    'By signing up, you will receive emails about CoinDesk product updates, events and marketing and you agree to our terms of services and privacy policy.',
+                    style: Theme.of(context).textTheme.caption,
+                    textAlign: TextAlign.center,
+                  ),
 
 //INPUT
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(height: rh(space2x)),
-                          CustomTextFormField(
-                            controller: _emailController,
-                            labelText: 'Email',
-                            validator: emailValidator,
-                            textInputType: TextInputType.emailAddress,
-                            prefix: const Icon(Icons.mail),
-                            suffix: _emailController.text.isEmpty
-                                ? Container(width: 0)
-                                : IconButton(
-                              icon: const Icon(Icons.close),
-                              onPressed: () => _emailController.clear(),
-                            ),
-                          ),
-                          SizedBox(height: rh(space2x)),
-                          CustomTextFormField(
-                            controller: _passwordController,
-                            labelText: 'Password',
-                            validator: validator,
-                            textInputType: TextInputType.visiblePassword,
-                            obscureText: isHidden,
-                            suffix: IconButton(
-                              icon:
-                              isHidden ? const Icon(Icons.visibility_off) : Icon(Icons.visibility),
-                              onPressed: togglePasswordVisibility,
-                            ),
-                            prefix: Icon(Icons.lock),
-                          ),
-                          SizedBox(height: rh(space2x)),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: rh(space3x)),
-                    //ACTION BUTTONS
-                    Buttons.expanded(
-                      context: context,
-                      text: 'Sign up the world of NFT',
-                      onPressed: _submit,
-                    ),
-                    SizedBox(height: rh(space3x)),
-
-                    GestureDetector(
-                      onTap: () =>
-                          _navigate(const SignInUserInfoScreen()),
-
-
-                      child: Text(
-                        'Already have an account ? touch SignIn now',
-                        style: Theme.of(context).textTheme.headline2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    SizedBox(height: rh(space3x)),
-                    Row(
-                      children: const <Widget>[
-                        Expanded(
-                          child: Divider(
-                            color: Color(0xFFD9D9D9),
-                            height: 1.5,
-                          ),
-                        ),
-
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                            "OR SIGN IN WITH",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Divider(
-                            color: Color(0xFFA11212),
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: rh(space3x)),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        GestureDetector(
-                          onTap: () => _navigate(const SignInUserInfoScreen()),
-                          child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 10),
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 2,
-                                  color: const Color(0xFFD9D9D9),
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Buttons.icon(
-                                context: context,
-                                svgPath: 'assets/images/gmail.svg',
-                                // right: 12,
-                                semanticLabel: 'Back',
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              )
+                        SizedBox(height: rh(space2x)),
+                        CustomTextFormField(
+                          controller: _emailController,
+                          labelText: 'Email',
+                          validator: emailValidator,
+                          textInputType: TextInputType.emailAddress,
+                          prefix: const Icon(Icons.mail),
+                          suffix: _emailController.text.isEmpty
+                              ? Container(width: 0)
+                              : IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () => _emailController.clear(),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () => _navigate(const SignInUserInfoScreen()),
-                          child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 10),
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 2,
-                                  color: const Color(0xFFD9D9D9),
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Buttons.icon(
-                                context: context,
-                                svgPath: 'assets/images/twitter.svg',
-                                // right: 12,
-                                semanticLabel: 'Back',
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              )
+                        SizedBox(height: rh(space2x)),
+                        CustomTextFormField(
+                          controller: _passwordController,
+                          labelText: 'Password',
+                          validator: validator,
+                          textInputType: TextInputType.visiblePassword,
+                          obscureText: isHidden,
+                          suffix: IconButton(
+                            icon:
+                            isHidden ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
+                            onPressed: togglePasswordVisibility,
                           ),
+                          prefix: const Icon(Icons.lock),
                         ),
-                        GestureDetector(
-                          // onTap: () => Navigation.push(
-                          //   context,
-                          //   screen: const SignInUserInfoScreen(),
-                          // ),
-                          child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 10),
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 2,
-                                  color: const Color(0xFFD9D9D9),
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Buttons.icon(
-                                context: context,
-                                svgPath: 'assets/images/google.svg',
-                                // right: 12,
-                                semanticLabel: 'Back',
-                                onPressed: () {
-                                  final status = Provider.of<AuthProvider>(context, listen: false).signInWithGoogle();
-                                  debugPrint('AuthProvider with signInWithGoogle ${status.toString()}');
-                                  // Navigation.push(context, screen: const SplashScreen());
-                                },
-                              )
-                          ),
-                        ),
+                        SizedBox(height: rh(space2x)),
                       ],
                     ),
+                  ),
+
+                  SizedBox(height: rh(space3x)),
+                  //ACTION BUTTONS
+                  Buttons.expanded(
+                    context: context,
+                    text: 'Sign up the world of NFT',
+                    onPressed: _submit,
+                  ),
+                  SizedBox(height: rh(space3x)),
+
+                  GestureDetector(
+                    onTap: () =>
+                        _navigate(const SignInUserInfoScreen()),
+
+
+                    child: Text(
+                      'Already have an account ? touch SignIn now',
+                      style: Theme.of(context).textTheme.headline2,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: rh(space3x)),
+                  Row(
+                    children: const <Widget>[
+                      Expanded(
+                        child: Divider(
+                          color: Color(0xFFD9D9D9),
+                          height: 1.5,
+                        ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          "OR SIGN IN WITH",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: Color(0xFFA11212),
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: rh(space3x)),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () => _navigate(const SignInUserInfoScreen()),
+                        child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 2,
+                                color: const Color(0xFFD9D9D9),
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Buttons.icon(
+                              context: context,
+                              svgPath: 'assets/images/gmail.svg',
+                              // right: 12,
+                              semanticLabel: 'Back',
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            )
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => _navigate(const SignInUserInfoScreen()),
+                        child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 2,
+                                color: const Color(0xFFD9D9D9),
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Buttons.icon(
+                              context: context,
+                              svgPath: 'assets/images/twitter.svg',
+                              // right: 12,
+                              semanticLabel: 'Back',
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            )
+                        ),
+                      ),
+                      GestureDetector(
+                        // onTap: () => Navigation.push(
+                        //   context,
+                        //   screen: const SignInUserInfoScreen(),
+                        // ),
+                        child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 2,
+                                color: const Color(0xFFD9D9D9),
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Buttons.icon(
+                              context: context,
+                              svgPath: 'assets/images/google.svg',
+                              // right: 12,
+                              semanticLabel: 'Back',
+                              onPressed: () {
+                                final status = Provider.of<AuthProvider>(context, listen: false).signInWithGoogle();
+                                debugPrint('AuthProvider with signInWithGoogle ${status.toString()}');
+                                // Navigation.push(context, screen: const SplashScreen());
+                              },
+                            )
+                        ),
+                      ),
+                    ],
+                  ),
 
 
 
 
-                    // Center(
-                    //   child: Buttons.text(
-                    //     context: context,
-                    //     text: 'Already have an account ?, Signin now',
-                    //     onPressed: _signinNow,
-                    //   ),
-                    // ),
-                  ],
-                ),
+                  // Center(
+                  //   child: Buttons.text(
+                  //     context: context,
+                  //     text: 'Already have an account ?, Signin now',
+                  //     onPressed: _signinNow,
+                  //   ),
+                  // ),
+                ],
               ),
             ),
           ),

@@ -30,7 +30,7 @@ import 'provider/auth_provider.dart';
 final locator = GetIt.instance;
 
 Future<void> init() async {
-  SharedPreferences _prefs = await SharedPreferences.getInstance();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   // FirebaseAuth _firebaseAuth = await FirebaseAuth.instance;
   //PROVIDER
   locator.registerLazySingleton<AppProvider>(() => AppProvider(
@@ -103,6 +103,6 @@ Future<void> init() async {
 
   //PLUGINS
 
-  locator.registerLazySingleton<SharedPreferences>(() => _prefs);
+  locator.registerLazySingleton<SharedPreferences>(() => prefs);
   // locator.registerLazySingleton<FirebaseAuth>(() => _firebaseAuth);
 }

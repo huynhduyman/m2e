@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -18,22 +17,17 @@ import 'package:walletconnect_secure_storage/walletconnect_secure_storage.dart';
 import 'package:http/http.dart'; //You can also import the browser version
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:eth_sig_util/model/typed_data.dart';
 
-import '../../core/services/firebase_service.dart';
 import '../../core/utils/utils.dart';
 import '../../core/widgets/custom_widgets.dart';
 import '../../provider/app_provider.dart';
-import '../../provider/auth_provider.dart';
 import '../../provider/wallet_provider.dart';
 import '../user_screen/edit_user_info_screen.dart';
 import '../splash_screen/splash_screen.dart';
 import '../../constants.dart';
 import '../../models/wallet_connect_registry.dart';
 import '../../core/widgets/wallet_connect_dialog/wallet_connect_dialog.dart';
-import '../../core/services/wallet_service.dart';
-import '../../screens/create_wallet_screen/create_wallet_screen.dart';
 
 class EnvironmentConfig {
   static const kExampleMinterAddress = String.fromEnvironment('MINTER_ADDRESS');
@@ -43,7 +37,7 @@ class EnvironmentConfig {
 class WalletConnectThirdparty extends StatefulWidget with WidgetsBindingObserver {
   const WalletConnectThirdparty({Key? key}) : super(key: key);
   @override
-  _WalletConnectThirdpartyState createState() => _WalletConnectThirdpartyState();
+  State<WalletConnectThirdparty> createState() => _WalletConnectThirdpartyState();
 }
 
 // Global Settings
@@ -352,7 +346,7 @@ Future<String> signTransaction({required BuildContext context, required WalletCo
     // IOS has selected a wallet listing from the WalletConnect Registry to use
     logger
         .d('Launching configured wallet ${walletListing.name} using universal link ${walletListing.mobile.universal}');
-    walletConnectUri = walletListing.mobile.universal + '/wc?uri=${Uri.encodeComponent(walletConnectTopicVersion)}';
+    walletConnectUri = '${walletListing.mobile.universal}/wc?uri=${Uri.encodeComponent(walletConnectTopicVersion)}';
   }
   bool result = await launchUrl(Uri.parse(walletConnectUri), mode: LaunchMode.externalApplication);
   if (result == false) {
@@ -393,7 +387,7 @@ Future<String> signTransaction({required BuildContext context, required WalletCo
     // Sign the transaction
     final requestResult = await _client.sendTransaction(_credentials, transaction);
     logger.d('WalletConnect signature = $requestResult');
-    if (requestResult is String) {
+    if (requestResult.isNotEmpty) {
       walletConnectSignature = requestResult; // as String;
     }
   } on Exception catch (e) {
@@ -420,7 +414,7 @@ Future<String> signTypedDataWithWalletConnect(
     // IOS has selected a wallet listing from the WalletConnect Registry to use
     logger
         .d('Launching configured wallet ${walletListing.name} using universal link ${walletListing.mobile.universal}');
-    walletConnectUri = walletListing.mobile.universal + '/wc?uri=${Uri.encodeComponent(walletConnectTopicVersion)}';
+    walletConnectUri = '${walletListing.mobile.universal}/wc?uri=${Uri.encodeComponent(walletConnectTopicVersion)}';
   }
   bool result = await launchUrl(Uri.parse(walletConnectUri), mode: LaunchMode.externalApplication);
   if (result == false) {
@@ -519,12 +513,7 @@ Future<bool> lazyMintExample({
   }
   // rarible.com store requires addresses to be lowercase #gotcha
   // and uses the path to indicate the chain (defaulting to ethereum if blank)
-  nftStoreUri = raribleDotCom +
-      '/token/' +
-      (basePath.contains('polygon') ? 'polygon/' : '') +
-      collection.toLowerCase() +
-      ':' +
-      tokenId.toLowerCase();
+  nftStoreUri = '$raribleDotCom/token/${basePath.contains('polygon') ? 'polygon/' : ''}${collection.toLowerCase()}:${tokenId.toLowerCase()}';
 
   onProgress?.call('tokenId = $tokenId (0x${BigInt.parse(tokenId).toRadixString(16)})');
 
@@ -559,11 +548,9 @@ Future<bool> lazyMintExample({
       collectionChainId: chainId, collectionAddress: collection, lazyMintFormJson: lazyMintFormJson);
 
   String signature = '';
-  String minterPrivateKey = EnvironmentConfig.kExampleMinterPrivateKey;
   /// Sign the typed Data Structure of request
   onProgress?.call('Calling WalletConnect API to have form signed.');
 
-  const message = "My email is john@doe.com - 1537836206101";
 
   signature = await signTypedDataWithWalletConnect(
     context: context,
@@ -618,7 +605,7 @@ Future<String> validateLazyMint({required String collection, required String tok
   final ipAddress = await InternetAddress.lookup(hostname);
   stopwatch.stop();
   logger.i('${stopwatch.elapsedMilliseconds}ms for DNS lookup of hostname $hostname ($ipAddress)');
-  Map<String, dynamic>? meta = null;
+  Map<String, dynamic>? meta;
 
   stopwatch.reset();
   stopwatch.start();
@@ -672,10 +659,8 @@ Future<String> lazyDelete({required String collection, required String tokenId, 
   logger.d('Requesting deletion of tokenId: $tokenId from collection $collection using endpoint $apiUrl.');
 
   // We need to prove we are the owner of the NFT by using a personal signed note
-  String lazyDeleteRequest = 'I would like to burn my $tokenId item.';
   String personalSignature = '';
 
-  String minterPrivateKey = EnvironmentConfig.kExampleMinterPrivateKey;
 
 
   Map<String, dynamic> lazyDeleteForm = {
@@ -728,7 +713,7 @@ Future<String> lazyDelete({required String collection, required String tokenId, 
 
 class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with WidgetsBindingObserver {
   String statusMessage = 'Initialized';
-  String _displayUri = ''; // QR Code for OpenConnect but not used
+// QR Code for OpenConnect but not used
 
   // final Web3Client ethereum;
   // final EthereumWalletConnectProvider provider;
@@ -800,7 +785,7 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
           blockchainFlavor = BlockchainFlavorExtention.fromChainId(chainId);
         });
 
-        if (minter != null) {
+        if (minter.isNotEmpty) {
           // https://rinkeby.infura.io/v3/a93948fb99514781b77253f1e6df7133
           // https://matic-mumbai.chainstacklabs.com
           // final rpcURL = 'https://rinkeby.infura.io/v3/a93948fb99514781b77253f1e6df7133';
@@ -810,6 +795,7 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
           _credentials = WalletConnectEthereumCredentials(provider: provider);
 
 
+          if (!mounted) return;
           await Provider.of<WalletProvider>(context, listen: false).initializeFromMetaMask(provider,session.accounts[0]);
 
           // // Test Firebase auth
@@ -821,8 +807,9 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
           // await Provider.of<WalletProvider>(context, listen: false)
           //     .initializeFromKey(_keyController.text);
           // //
+          if (!mounted) return;
           Provider.of<AppProvider>(context, listen: false).initialize();
-          final stateProvider = await Provider.of<AppProvider>(context, listen: false).state;
+          final stateProvider = Provider.of<AppProvider>(context, listen: false).state;
           // await Provider.of<AppProvider>(context, listen: false).initialize();
 
           logger.w('state AppProvider $stateProvider.');
@@ -835,7 +822,7 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
           // EtherAmount balance = ethClient.getBalance(credentials.address);
           // print(balance.getValueInUnit(EtherUnit.ether));
 
-          logger.w('Credentials web3dart - ${_credentials}.');
+          logger.w('Credentials web3dart - $_credentials.');
           // scheduleMicrotask(() {
           //   Navigation.popAllAndPush(
           //     context,
@@ -951,7 +938,6 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
           chainId: 1,
           onDisplayUri: (uri) async {
             setState(() {
-              _displayUri = uri;
               logger.d('_displayUri updated with $uri');
             });
 
@@ -960,7 +946,7 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
 
             // IOS users have already chosen wallet, so customize the launcher
             if (Platform.isIOS) {
-              uri = walletListing.mobile.universal + '/wc?uri=${Uri.encodeComponent(uri)}';
+              uri = '${walletListing.mobile.universal}/wc?uri=${Uri.encodeComponent(uri)}';
             }
             // Else
             // - Android users will choose their walled from the OS prompt
@@ -1035,9 +1021,8 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
 
   final TextEditingController _keyController = TextEditingController();
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  _checkTxnHash() async {
+  _checkTxnHash(BuildContext context) async {
     var etherscan = 'https://github.com/huynhduyman/m2e';
     if (basePath.contains('polygon')) {
       etherscan = 'https://mumbai.polygonscan.com/tx/$stringTxnHash';
@@ -1045,14 +1030,14 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
       etherscan = 'https://rinkeby.etherscan.io/tx/$stringTxnHash';
     }
     log(etherscan);
-    if (await launch(etherscan)) {}
+    await openUrl(etherscan, context);
   }
 
   @override
   void initState() {
     super.initState();
     // Register observer so we can see app lifecycle changes.
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     init(blockchain: BlockchainFlavor.mumbai);
     initWalletConnect();
   }
@@ -1085,16 +1070,18 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
 
   }
 
-  _userInfo() async {
+  _userInfo(BuildContext context) async {
     await Provider.of<AppProvider>(context, listen: false).initialize();
+    if (!mounted) return;
     Navigation.push(
       context,
       screen: const EditUserInfoScreen(),
     );
   }
 
-  _homescreen() async {
+  _homescreen(BuildContext context) async {
     await Provider.of<AppProvider>(context, listen: false).initialize();
+    if (!mounted) return;
     Navigation.popAllAndPush(context, screen: const SplashScreen());
   }
 
@@ -1103,7 +1090,7 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
     _keyController.dispose();
     super.dispose();
     // Remove observer for app lifecycle changes.
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override
@@ -1176,13 +1163,11 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
               SizedBox(height: rh(space3x)),
 
               ElevatedButton.icon(
-                icon: Container(
-                  child: Image.asset(
-                      'assets/images/WalletConnect.png',
-                      // width: rf(100),
-                      height: rh(50)
-                    // style: Theme.of(context).textTheme.headline5,
-                  ),
+                icon: Image.asset(
+                    'assets/images/WalletConnect.png',
+                    // width: rf(100),
+                    height: rh(50)
+                  // style: Theme.of(context).textTheme.headline5,
                 ),
                 onPressed: () {
                   createWalletConnectSession(context);
@@ -1211,7 +1196,6 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
               ),
 
               ElevatedButton(
-                child: const Text('Mint NFT'),
                 onPressed: (() async {
                   logger.d('Button Pressed');
 
@@ -1231,10 +1215,10 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
                         });
                       }));
                 }),
+                child: const Text('Mint NFT'),
               ),
 
               ElevatedButton(
-                child: const Text('signTransaction'),
                 onPressed: (() async {
                   logger.d('Button Pressed');
 
@@ -1254,13 +1238,14 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
                         });
                       }));
                 }),
+                child: const Text('signTransaction'),
               ),
 
               Buttons.flexible(
                 width: double.infinity,
                 context: context,
                 text: 'User Info',
-                onPressed: _userInfo,
+                onPressed: _userInfo(context),
               ),
 
               SizedBox(height: rh(space3x)),
@@ -1269,7 +1254,7 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
                 width: double.infinity,
                 context: context,
                 text: 'Home',
-                onPressed: _homescreen,
+                onPressed: _homescreen(context),
               ),
 
               Visibility(
@@ -1278,7 +1263,7 @@ class _WalletConnectThirdpartyState extends State<WalletConnectThirdparty> with 
                 Buttons.text(
                   context: context,
                   text: 'Check Txn Hash',
-                  onPressed: _checkTxnHash,
+                  onPressed: _checkTxnHash(context),
                 ),
               ),
             ],
