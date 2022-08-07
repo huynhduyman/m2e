@@ -9,7 +9,7 @@ class AddPropertyWidget extends StatefulWidget {
   final Function add;
 
   @override
-  _AddPropertyWidgetState createState() => _AddPropertyWidgetState();
+  State<AddPropertyWidget> createState() => _AddPropertyWidgetState();
 }
 
 class _AddPropertyWidgetState extends State<AddPropertyWidget> {

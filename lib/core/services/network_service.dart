@@ -35,11 +35,11 @@ class NetworkService {
   }) async {
     try {
       //Parse the url into uri
-      final Uri _url = Uri.parse(baseUrl + endPoint);
+      final Uri url = Uri.parse(baseUrl + endPoint);
 
       //Make request
       final response = await httpService.get(
-        _url,
+        url,
         headers: headers ?? defaultHeaders,
       );
 
@@ -59,6 +59,7 @@ class NetworkService {
 
       throw e.toString();
     }
+    return null;
   }
 
   ///POST Request
@@ -71,11 +72,11 @@ class NetworkService {
   }) async {
     try {
       //Parse the url into uri
-      final Uri _url = Uri.parse(baseUrl + endPoint);
+      final Uri url = Uri.parse(baseUrl + endPoint);
 
       //Make request
       final response = await httpService.post(
-        _url,
+        url,
         headers: headers ?? defaultHeaders,
         body: body,
       );
@@ -94,6 +95,7 @@ class NetworkService {
 
       throw e.toString();
     }
+    return null;
   }
 
   ///DELETE Request
@@ -105,11 +107,11 @@ class NetworkService {
   }) async {
     try {
       //Parse the url into uri
-      final Uri _url = Uri.parse(baseUrl + endPoint);
+      final Uri url = Uri.parse(baseUrl + endPoint);
 
       //Make request
       final response = await httpService.post(
-        _url,
+        url,
         headers: headers ?? defaultHeaders,
       );
 
@@ -123,5 +125,6 @@ class NetworkService {
 
       throw e.toString();
     }
+    return null;
   }
 }
